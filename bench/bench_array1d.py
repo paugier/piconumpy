@@ -1,13 +1,13 @@
 """
-nanonumpy could be implemented using [hpy](https://github.com/pyhandle/hpy) so
+piconumpy could be implemented using [hpy](https://github.com/pyhandle/hpy) so
 that PyPy should be able to accelerate this code (the slow loops only involve
-pure-Python and nanonumpy).
+pure-Python and piconumpy).
 
-nanonumpy could be a really tiny package. It "just" has to provide an `array`
-class (one-dimensional) and two functions (`cos` and `sin`) acting on nanonumpy
+piconumpy could be a really tiny package. It "just" has to provide an `array`
+class (one-dimensional) and two functions (`cos` and `sin`) acting on piconumpy
 arrays.
 
-The nanonumpy array class "just" has to support:
+The piconumpy array class "just" has to support:
 
 - instantiation from a list of floats and a np.ndarray of floats
 - multiplication and division by a float
@@ -25,7 +25,7 @@ vs PyPy, which is very slow for such codes using Numpy).
 import numpy as np
 
 from numpy import pi, cos, sin, array
-# from nanonumpy import pi, cos, sin, array
+# from piconumpy import pi, cos, sin, array
 
 from transonic import jit
 

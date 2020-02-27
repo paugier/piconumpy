@@ -9,7 +9,7 @@ arrays.
 
 The piconumpy array class "just" has to support:
 
-- instantiation from a list of floats and a np.ndarray of floats
+- instantiation from a list of floats
 - multiplication and division by a float
 - term by term multiplication and addition
 
@@ -69,10 +69,10 @@ def board(t, X_0):
 
 
 def solver(f, x0, y0, u0, v0, dt, N_t, b=0.5):
-    x0 = array(x0)
-    y0 = array(y0)
-    u0 = array(u0)
-    v0 = array(v0)
+    x0 = array(x0.tolist())
+    y0 = array(y0.tolist())
+    u0 = array(u0.tolist())
+    v0 = array(v0.tolist())
 
     solutions = []
     for k in range(len(x0)):

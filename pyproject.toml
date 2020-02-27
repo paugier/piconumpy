@@ -1,0 +1,25 @@
+[project]
+name = "piconumpy"
+version = "0.0.0"
+description = "An experiment about Numpy and pyhandle/hpy."
+authors = [
+    "Pierre Augier <pierre.augier@univ-grenoble-alpes.fr>"
+]
+license = "BSD 3-Clause"
+readme = "README.md"
+python = "^3.6"
+homepage = "https://github.com/paugier/piconumpy"
+repository = "https://github.com/paugier/piconumpy"
+documentation = "https://github.com/paugier/piconumpy"
+
+keywords = ["numpy", "hpy", "PyPy"]
+
+[build-system]
+requires = [
+    "setuptools >= 35.0.2",
+    "wheel"
+]
+
+[tool.black]
+line-length = 82
+target_version = ['py36']

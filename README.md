@@ -13,8 +13,8 @@ arrays.
 The piconumpy array class "just" has to support:
 
 - instantiation from a list of floats
-- multiplication and division by a float
-- term by term multiplication and addition
+- Elementwise multiplication and division by a float
+- Elementwise multiplication and addition (of 2 arrays)
 
 A good acceleration by PyPy of our example would be a great proof that the
 scientific Python community has to invest time and energy on hpy.

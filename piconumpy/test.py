@@ -30,3 +30,8 @@ def test_multiply():
 def test_add():
     a = array([1.0, 2.0])
     assert (a + 2 * a).tolist() == [3.0, 6.0]
+
+
+def test_divide():
+    a = array([1.0, 2.0])
+    assert (a / 2).tolist() == [0.5, 1.0]

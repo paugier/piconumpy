@@ -167,6 +167,24 @@ static ArrayObject *Array_add(PyObject *o1, PyObject *o2) {
   return result;
 };
 
+static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
+  int index;
+  double number;
+  ArrayObject *result = NULL, *a1;
+
+  if (!PyNumber_Check(o2)) {
+    return result;
+  }
+  a1 = o1;
+  number = PyFloat_AsDouble(o2);
+  result = Array_empty(a1->size);
+  for (index = 0; index < a1->size; index++) {
+    result->data[index] = a1->data[index] / number;
+  }
+
+  return result;
+};
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
     {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
@@ -186,6 +204,7 @@ PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
 
   ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
   ArrayType.tp_as_number->nb_add = (binaryfunc)Array_add;
+  ArrayType.tp_as_number->nb_true_divide = (binaryfunc)Array_divide;
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)

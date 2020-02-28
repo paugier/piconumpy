@@ -65,28 +65,13 @@ static PyObject *Array_tolist(ArrayObject *self, PyObject *Py_UNUSED(ignored)) {
 
 static ArrayObject *Array_empty(int size);
 
-// static ArrayObject *Array_mul(ArrayObject *self, PyObject *other) {
-//   int index;
-//   double number;
-//   ArrayObject *result = NULL;
-
-//   if (PyNumber_Check(other)) {
-//     number = PyFloat_AsDouble(other);
-//     result = Array_empty(self->size);
-//     for (index = 0; index < self->size; index++) {
-//       result->data[index] = self->data[index] * number;
-//     }
-//   }
-
-//   return result;
-// };
-
 static PyMethodDef Array_methods[] = {
     {"tolist", (PyCFunction)Array_tolist, METH_NOARGS,
      "Return the data as a list"},
-    // {"__mul__", (PyCFunction)Array_mul, METH_O, "multiplication"},
     {NULL} /* Sentinel */
 };
+
+static PyNumberMethods number_methods = {NULL};
 
 static PyTypeObject ArrayType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -101,6 +86,7 @@ static PyTypeObject ArrayType = {
     .tp_dealloc = (destructor)Array_dealloc,
     .tp_members = Array_members,
     .tp_methods = Array_methods,
+    .tp_as_number = &number_methods,
 };
 
 static ArrayObject *Array_empty(int size) {
@@ -139,6 +125,31 @@ static ArrayObject *module_sin(PyObject *module, ArrayObject *arg) {
   return result;
 };
 
+static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
+  int index;
+  double number;
+  PyObject *obj_number;
+  ArrayObject *result = NULL, *arr;
+
+  if (PyNumber_Check(o2)) {
+    obj_number = o2;
+    arr = o1;
+  } else if (PyNumber_Check(o1)) {
+    obj_number = o1;
+    arr = o2;
+  }
+
+  if (PyNumber_Check(o1) | PyNumber_Check(o2)) {
+    number = PyFloat_AsDouble(obj_number);
+    result = Array_empty(arr->size);
+    for (index = 0; index < arr->size; index++) {
+      result->data[index] = arr->data[index] * number;
+    }
+  }
+
+  return result;
+};
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
     {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
@@ -155,6 +166,8 @@ PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   PyObject *m;
   if (PyType_Ready(&ArrayType) < 0)
     return NULL;
+
+  ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)

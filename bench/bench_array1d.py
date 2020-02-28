@@ -12,6 +12,8 @@ The piconumpy array class "just" has to support:
 - instantiation from a list of floats
 - multiplication and division by a float
 - term by term addition
+- len
+- indexing
 
 A good acceleration of this code on PyPy would be a great proof that the
 scientific Python community has to invest time and energy on hpy.

@@ -72,6 +72,7 @@ static PyMethodDef Array_methods[] = {
 };
 
 static PyNumberMethods number_methods = {NULL};
+static PySequenceMethods sequence_methods = {NULL};
 
 static PyTypeObject ArrayType = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -87,6 +88,7 @@ static PyTypeObject ArrayType = {
     .tp_members = Array_members,
     .tp_methods = Array_methods,
     .tp_as_number = &number_methods,
+    .tp_as_sequence = &sequence_methods,
 };
 
 static ArrayObject *Array_empty(int size) {
@@ -185,6 +187,20 @@ static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
   return result;
 };
 
+Py_ssize_t Array_length(ArrayObject *arr) {
+  Py_ssize_t result = (Py_ssize_t)arr->size;
+  return result;
+};
+
+PyFloatObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
+  PyFloatObject *item = NULL;
+  if (index < 0 | index >= arr->size) {
+    return item;
+  }
+  item = PyFloat_FromDouble(arr->data[index]);
+  return item;
+};
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
     {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
@@ -205,6 +221,9 @@ PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
   ArrayType.tp_as_number->nb_add = (binaryfunc)Array_add;
   ArrayType.tp_as_number->nb_true_divide = (binaryfunc)Array_divide;
+
+  ArrayType.tp_as_sequence->sq_length = (lenfunc)Array_length;
+  ArrayType.tp_as_sequence->sq_item = (ssizeargfunc)Array_item;
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)

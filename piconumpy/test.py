@@ -35,3 +35,9 @@ def test_add():
 def test_divide():
     a = array([1.0, 2.0])
     assert (a / 2).tolist() == [0.5, 1.0]
+
+
+def test_sequence():
+    a = array([1.0, 2.0])
+    assert len(a) == 2
+    assert a[1] == 2.0

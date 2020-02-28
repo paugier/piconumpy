@@ -11,7 +11,7 @@ The piconumpy array class "just" has to support:
 
 - instantiation from a list of floats
 - multiplication and division by a float
-- term by term multiplication and addition
+- term by term addition
 
 A good acceleration of this code on PyPy would be a great proof that the
 scientific Python community has to invest time and energy on hpy.
@@ -25,9 +25,10 @@ vs PyPy, which is very slow for such codes using Numpy).
 import numpy as np
 
 from numpy import pi, cos, sin, array
-# from piconumpy import pi, cos, sin, array
 
 from transonic import jit
+
+# begin code functions (don't remove this line)
 
 
 def runge_kutta_step(f, x0, dt, t=None):
@@ -90,6 +91,9 @@ def bench(n_sleds, n_time):
     u_init = np.zeros(n_sleds) + 3.5
 
     solver(board, x_init, y_init, u_init, v_init, 0.01, n_time)
+
+
+# end code functions (don't remove this line)
 
 
 bench_pythran = jit(bench)

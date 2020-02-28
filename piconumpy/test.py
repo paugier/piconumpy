@@ -25,3 +25,8 @@ def test_multiply():
     a = array([1.0, 2.0])
     assert (2 * a).tolist() == [2.0, 4.0]
     assert (a * 3).tolist() == [3.0, 6.0]
+
+
+def test_add():
+    a = array([1.0, 2.0])
+    assert (a + 2 * a).tolist() == [3.0, 6.0]

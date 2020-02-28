@@ -150,6 +150,23 @@ static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
   return result;
 };
 
+static ArrayObject *Array_add(PyObject *o1, PyObject *o2) {
+  int index;
+  ArrayObject *result = NULL, *a1, *a2;
+  a1 = o1;
+  a2 = o2;
+
+  if (a1->size != a2->size)
+    return result;
+
+  result = Array_empty(a1->size);
+  for (index = 0; index < a1->size; index++) {
+    result->data[index] = a1->data[index] + a2->data[index];
+  }
+
+  return result;
+};
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
     {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
@@ -168,6 +185,7 @@ PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
     return NULL;
 
   ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
+  ArrayType.tp_as_number->nb_add = (binaryfunc)Array_add;
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)

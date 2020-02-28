@@ -4,8 +4,7 @@ that PyPy should be able to accelerate this code (the slow loops only involve
 pure-Python and piconumpy).
 
 piconumpy could be a really tiny package. It "just" has to provide an `array`
-class (one-dimensional) and two functions (`cos` and `sin`) acting on piconumpy
-arrays.
+class (one-dimensional) and two functions (`cos` and `sin`) acting on floats.
 
 The piconumpy array class "just" has to support:
 

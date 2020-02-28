@@ -107,22 +107,18 @@ static ArrayObject *empty(PyObject *module, PyObject *arg) {
   return Array_empty(size);
 };
 
-static ArrayObject *module_cos(PyObject *module, ArrayObject *arg) {
-  int index;
-  ArrayObject *result = NULL;
-  result = Array_empty(arg->size);
-  for (index = 0; index < arg->size; index++) {
-    result->data[index] = cos(arg->data[index]);
+static PyObject *module_cos(PyObject *module, PyObject *arg) {
+  PyObject *result = NULL;
+  if (PyNumber_Check(arg)) {
+    result = PyFloat_FromDouble(cos(PyFloat_AsDouble(arg)));
   }
   return result;
 };
 
-static ArrayObject *module_sin(PyObject *module, ArrayObject *arg) {
-  int index;
-  ArrayObject *result = NULL;
-  result = Array_empty(arg->size);
-  for (index = 0; index < arg->size; index++) {
-    result->data[index] = sin(arg->data[index]);
+static PyObject *module_sin(PyObject *module, PyObject *arg) {
+  PyObject *result = NULL;
+  if (PyNumber_Check(arg)) {
+    result = PyFloat_FromDouble(sin(PyFloat_AsDouble(arg)));
   }
   return result;
 };

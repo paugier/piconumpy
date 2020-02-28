@@ -7,4 +7,4 @@ format:
 	clang-format-7 -i piconumpy/*.c
 
 tests:
-	pytest piconumpy/test.py
+	pytest piconumpy/test.py -s

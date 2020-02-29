@@ -8,3 +8,6 @@ format:
 
 tests:
 	pytest piconumpy/test.py -s
+
+clean:
+	rm -f piconumpy/*.so

@@ -1,27 +1,3 @@
-"""
-piconumpy could be implemented using [hpy](https://github.com/pyhandle/hpy) so
-that PyPy should be able to accelerate this code (the slow loops only involve
-pure-Python and piconumpy).
-
-piconumpy could be a really tiny package. It "just" has to provide an `array`
-class (one-dimensional) and two functions (`cos` and `sin`) acting on floats.
-
-The piconumpy array class "just" has to support:
-
-- instantiation from a list of floats
-- multiplication and division by a float
-- term by term addition
-- len
-- indexing
-
-A good acceleration of this code on PyPy would be a great proof that the
-scientific Python community has to invest time and energy on hpy.
-
-In this script, Transonic is used for the benchmark and comparison. With
-Transonic-Pythran, we typically get a 100 speedup compared to CPython (and ~500
-vs PyPy, which is very slow for such codes using Numpy).
-
-"""
 
 import numpy as np
 
@@ -100,15 +76,15 @@ def bench(n_sleds, n_time):
 bench_pythran = jit(bench)
 # Numba does not support this code...
 # bench_numba = jit(backend="numba")(bench)
+from transonic import wait_for_all_extensions
+
+# warmup (compilation of the Pythran extension)
+bench_pythran(1, 1)
+wait_for_all_extensions()
 
 if __name__ == "__main__":
 
     from transonic.util import timeit_verbose as timeit
-    from transonic import wait_for_all_extensions
-
-    # warmup (compilation of the Pythran extension)
-    bench_pythran(1, 1)
-    wait_for_all_extensions()
 
     n_sleds = 10
     n_time = 200

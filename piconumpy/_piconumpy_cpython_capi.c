@@ -20,9 +20,6 @@ static int Array_init(ArrayObject *self, PyObject *args, PyObject *kwds) {
   int index;
   PyObject *data = NULL, *item;
 
-  // PyObject *builtins = PyEval_GetBuiltins();
-  // PyObject *print = PyDict_GetItemString(builtins, "print");
-
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &data))
     return -1;
 
@@ -30,8 +27,6 @@ static int Array_init(ArrayObject *self, PyObject *args, PyObject *kwds) {
     PyErr_SetString(PyExc_TypeError, "parameter must be a list");
     return -1;
   }
-
-  // PyEval_CallFunction(print, "(O)", data);
 
   self->size = (int)PyList_Size(data);
 

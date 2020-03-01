@@ -6,4 +6,4 @@ build
 *.so
 .vscode
 
-**/tmp.py
+**/tmp*.py

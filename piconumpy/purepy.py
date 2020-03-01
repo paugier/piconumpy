@@ -1,0 +1,31 @@
+from math import cos, sin, pi
+
+__all__ = ["cos", "sin", "array", "pi"]
+
+
+class array:
+    def __init__(self, data):
+        self.data = list(float(number) for number in data)
+        self.size = len(self.data)
+
+    def __add__(self, other):
+        return array(
+            number + other.data[index] for index, number in enumerate(self.data)
+        )
+
+    def __mul__(self, other):
+        return array(other * number for number in self.data)
+
+    __rmul__ = __mul__
+
+    def __truediv__(self, other):
+        return array(number / other for number in self.data)
+
+    def tolist(self):
+        return list(self.data)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data[index]

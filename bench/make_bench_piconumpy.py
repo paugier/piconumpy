@@ -32,10 +32,10 @@ n_sleds = 10
 n_time = 200
 
 g = locals()
-norm = timeit("bench_numpy(n_sleds, n_time)", globals=g)
-bench_piconumpy = bench
-timeit("bench_pythran(n_sleds, n_time)", globals=g, norm=norm)
+norm = timeit("bench_pythran(n_sleds, n_time)", globals=g)
+timeit("bench_numpy(n_sleds, n_time)", globals=g, norm=norm)
 timeit("bench_piconumpy_purepy(n_sleds, n_time)", globals=g, norm=norm)
+bench_piconumpy = bench
 timeit("bench_piconumpy(n_sleds, n_time)", globals=g, norm=norm)
 """
 )

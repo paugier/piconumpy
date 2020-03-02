@@ -1,13 +1,20 @@
 
+ifeq ($(PYTHON),)
+PYTHON := python
+endif
+
 all:
-	pip install -e .[dev]
+	$(PYTHON) -m pip install -e .[dev]
+
+full:
+	$(PYTHON) -m pip install -e .[full]
 
 format:
 	black -l 82 setup.py piconumpy/*.py
 	clang-format-7 -i piconumpy/*.c
 
 tests:
-	pytest piconumpy/test.py -s
+	$(PYTHON) -m pytest piconumpy -s
 
 clean:
 	rm -f piconumpy/*.so

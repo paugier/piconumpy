@@ -57,6 +57,18 @@ such codes using Numpy).
 
 [bench/bench_array1d.py]: https://github.com/paugier/piconumpy/blob/master/bench/bench_array1d.py
 
+## Install and run the benchmarks
+
+`make` should install the package in editable mode. `cd bench; make` should run
+the benchmarks.
+
+For PyPy, the Makefiles are sensible to the environment variable `PYTHON`, so
+you could use:
+
+```bash
+export PYTHON=pypy3
+```
+
 ## CPython C-API usage in PicoNumpy
 
 It is the first time that I wrote a Python extension by hand (without Cython or

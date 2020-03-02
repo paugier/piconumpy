@@ -17,7 +17,8 @@ keywords = ["numpy", "hpy", "PyPy"]
 [build-system]
 requires = [
     "setuptools >= 35.0.2",
-    "wheel"
+    "wheel",
+    "cython"
 ]
 
 [tool.black]

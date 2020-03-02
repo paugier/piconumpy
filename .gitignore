@@ -7,3 +7,5 @@ build
 .vscode
 
 **/tmp*.py
+
+*_cython.c

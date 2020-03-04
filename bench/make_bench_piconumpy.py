@@ -35,7 +35,7 @@ from piconumpy import pi, cos, sin, array
 """
     + code_functions
     + """
-from transonic.util import timeit_verbose as timeit
+from piconumpy.bench import timeit_verbose
 
 from bench_array1d import bench as bench_numpy, bench_pythran
 from tmp_purepy import bench as bench_piconumpy_purepy
@@ -46,13 +46,28 @@ n_sleds = 10
 n_time = 200
 
 g = locals()
-norm = timeit("bench_pythran(n_sleds, n_time)", globals=g)
-timeit("bench_numpy(n_sleds, n_time)", globals=g, norm=norm)
-timeit("bench_piconumpy_purepy(n_sleds, n_time)", globals=g, norm=norm)
-timeit("bench_piconumpy_purepy_array(n_sleds, n_time)", globals=g, norm=norm)
-timeit("bench_cython(n_sleds, n_time)", globals=g, norm=norm)
-bench_piconumpy = bench
-timeit("bench_piconumpy(n_sleds, n_time)", globals=g, norm=norm)
+max_length_name = len("piconumpy (CPython C-API)") + 2
+
+def timeit(name_func, name, norm=None):
+    return timeit_verbose(
+        name_func + "(n_sleds, n_time)",
+        globals=g,
+        name=name,
+        print_time=True,
+        norm=norm,
+        max_length_name=max_length_name,
+    )
+
+norm = timeit("bench_pythran", name="Pythran")
+timeit("bench_numpy", norm=norm, name="Numpy")
+timeit(
+    "bench_piconumpy_purepy", norm=norm, name="PicoNumpy (purepy)",
+)
+timeit(
+    "bench_piconumpy_purepy_array", norm=norm, name="PicoNumpy (purepy_array)",
+)
+timeit("bench_cython", norm=norm, name="PicoNumpy (Cython)")
+timeit("bench", norm=norm, name="PicoNumpy (CPython C-API)")
 """
 )
 

@@ -206,8 +206,6 @@ static PyModuleDef piconumpymodule = {
 
 PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   PyObject *m;
-  if (PyType_Ready(&ArrayType) < 0)
-    return NULL;
 
   ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
   ArrayType.tp_as_number->nb_add = (binaryfunc)Array_add;
@@ -215,6 +213,9 @@ PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
 
   ArrayType.tp_as_sequence->sq_length = (lenfunc)Array_length;
   ArrayType.tp_as_sequence->sq_item = (ssizeargfunc)Array_item;
+
+  if (PyType_Ready(&ArrayType) < 0)
+    return NULL;
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)

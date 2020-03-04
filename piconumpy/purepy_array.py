@@ -6,7 +6,6 @@ import array as _array
 
 
 class array(_array.array):
-
     def __new__(cls, *args):
         return super().__new__(cls, "f", *args)
 
@@ -14,7 +13,9 @@ class array(_array.array):
         self.size = len(self)
 
     def __add__(self, other):
-        return self.__class__(number + other[index] for index, number in enumerate(self))
+        return self.__class__(
+            number + other[index] for index, number in enumerate(self)
+        )
 
     def __mul__(self, other):
         return self.__class__(other * number for number in self)

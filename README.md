@@ -82,25 +82,25 @@ As of today (5 March 2020), HPy is not yet ready!
 - With CPython
 
 ```raw
-Julia                      :     1 * norm = 0.00545 s
-Transonic-Pythran          : 0.552 * norm = 0.00301 s
-Numpy                      :  42.3 * norm =    0.23 s
-PicoNumpy (purepy)         :    23 * norm =   0.125 s
-PicoNumpy (purepy_array)   :  20.8 * norm =   0.113 s
-PicoNumpy (Cython)         :  15.4 * norm =  0.0841 s
-PicoNumpy (CPython C-API)  :  4.64 * norm =  0.0253 s
+Julia                      :     1 * norm = 0.00534 s
+Transonic-Pythran          : 0.564 * norm
+Numpy                      :  18.2 * norm
+PicoNumpy (purepy)         :  23.7 * norm
+PicoNumpy (purepy_array)   :  21.7 * norm
+PicoNumpy (Cython)         :  15.6 * norm
+PicoNumpy (CPython C-API)  :   4.7 * norm
 ```
 
 - With PyPy3
 
 ```raw
-Julia                      :     1 * norm = 0.00545 s
-Transonic-Pythran          : 0.591 * norm = 0.00322 s
-Numpy                      :   351 * norm =    1.91 s
-PicoNumpy (purepy)         :  2.36 * norm =  0.0129 s
-PicoNumpy (purepy_array)   :  3.68 * norm =  0.0201 s
-PicoNumpy (Cython)         :   135 * norm =   0.737 s
-PicoNumpy (CPython C-API)  :  29.1 * norm =   0.158 s
+Julia                      :     1 * norm = 0.00534 s
+Transonic-Pythran          : 0.603 * norm
+Numpy                      :   183 * norm
+PicoNumpy (purepy)         :   2.4 * norm
+PicoNumpy (purepy_array)   :  3.73 * norm
+PicoNumpy (Cython)         :   135 * norm
+PicoNumpy (CPython C-API)  :  17.8 * norm
 ```
 
 ### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)

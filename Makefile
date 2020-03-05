@@ -18,3 +18,6 @@ tests:
 
 clean:
 	rm -f piconumpy/*.so
+
+black:
+	black -l 82 .

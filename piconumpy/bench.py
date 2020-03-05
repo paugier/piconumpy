@@ -20,19 +20,19 @@ def timeit_verbose(
     else:
         norm_given = True
 
-    fmt_name = f"{{:{max_length_name}s}}"
     if name is None:
         name = stmt.split("(")[0]
 
+    fmt_name = f"{{:{max_length_name}s}}"
     name = fmt_name.format(name)
 
     if print_time:
-        raw_time = f" = {result:4.3g} s"
+        raw_time = f" = {result:7.3g} s"
     else:
         raw_time = ""
 
-    print(f"{name}: {result/norm:4.3g} * norm{raw_time}")
+    print(f"{name}: {result/norm:5.3g} * norm{raw_time}")
     if not norm_given and not print_time:
-        print(f"norm = {norm:4.3g} s")
+        print(f"norm = {norm:5.3g} s")
 
     return result

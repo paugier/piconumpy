@@ -35,6 +35,7 @@ from piconumpy import pi, cos, sin, array
 """
     + code_functions
     + """
+
 from piconumpy.bench import timeit_verbose
 
 from bench_array1d import bench as bench_numpy, bench_pythran
@@ -42,13 +43,22 @@ from tmp_purepy import bench as bench_piconumpy_purepy
 from tmp_purepy_array import bench as bench_piconumpy_purepy_array
 from tmp_cython import bench as bench_cython
 
+# get norm from Julia benchmark
+with open("tmp_result_julia.txt") as file:
+    norm = float(file.read())
+
+max_length_name = len("piconumpy (CPython C-API)") + 2
+
+fmt_name = f"{{:{max_length_name}s}}"
+name = fmt_name.format("Julia")
+print(f"{name}:     1 * norm = {norm:4.3g} s")
+
 n_sleds = 10
 n_time = 200
 
 g = locals()
-max_length_name = len("piconumpy (CPython C-API)") + 2
 
-def timeit(name_func, name, norm=None):
+def timeit(name_func, name):
     return timeit_verbose(
         name_func + "(n_sleds, n_time)",
         globals=g,
@@ -58,16 +68,16 @@ def timeit(name_func, name, norm=None):
         max_length_name=max_length_name,
     )
 
-norm = timeit("bench_pythran", name="Pythran")
-timeit("bench_numpy", norm=norm, name="Numpy")
+timeit("bench_pythran", name="Pythran")
+timeit("bench_numpy", name="Numpy")
 timeit(
-    "bench_piconumpy_purepy", norm=norm, name="PicoNumpy (purepy)",
+    "bench_piconumpy_purepy", name="PicoNumpy (purepy)",
 )
 timeit(
-    "bench_piconumpy_purepy_array", norm=norm, name="PicoNumpy (purepy_array)",
+    "bench_piconumpy_purepy_array", name="PicoNumpy (purepy_array)",
 )
-timeit("bench_cython", norm=norm, name="PicoNumpy (Cython)")
-timeit("bench", norm=norm, name="PicoNumpy (CPython C-API)")
+timeit("bench_cython", name="PicoNumpy (Cython)")
+timeit("bench", name="PicoNumpy (CPython C-API)")
 """
 )
 

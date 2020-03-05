@@ -60,13 +60,17 @@ such codes using Numpy).
 ## Install and run the benchmarks
 
 `make` should install the package in editable mode. `cd bench; make` should run
-the benchmarks.
+the benchmarks. For the benchmarks, Julia is used for a good comparison point
+so the command `julia` has to be available.
 
 For PyPy, the Makefiles are sensible to the environment variable `PYTHON`, so
-you could use:
+you could do:
 
 ```bash
 export PYTHON=pypy3
+make
+cd bench
+make
 ```
 
 ## CPython C-API usage in PicoNumpy

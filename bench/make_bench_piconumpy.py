@@ -9,7 +9,8 @@ def create_tmp_file(name_module):
     code = (
         f"""
 import numpy as np
-from piconumpy.{name_module} import pi, cos, sin, array
+from piconumpy.{name_module} import array
+from math import pi, cos, sin
     """
         + code_functions
     )
@@ -31,7 +32,8 @@ create_tmp_file("_piconumpy_cython")
 code = (
     """
 import numpy as np
-from piconumpy import pi, cos, sin, array
+from piconumpy import array
+from math import pi, cos, sin
 """
     + code_functions
     + """
@@ -63,7 +65,7 @@ def timeit(name_func, name):
         name_func + "(n_sleds, n_time)",
         globals=g,
         name=name,
-        print_time=True,
+        print_time=False,
         norm=norm,
         max_length_name=max_length_name,
     )

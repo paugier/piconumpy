@@ -11,7 +11,7 @@ tmp.py: bench_array1d.py make_bench_piconumpy.py
 
 clean:
 	transonic -cc bench_array1d.py -f
-	rm -f tmp*.py
+	rm -f tmp*.py tmp*.txt
 
 tmp_result_julia.txt:
 	julia bench.jl > tmp_result_julia.txt

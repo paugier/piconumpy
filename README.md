@@ -108,25 +108,25 @@ PicoNumpy (CPython C-API)  :  29.1 * norm =   0.158 s
 - With CPython
 
 ```raw
-Julia                      :     1 * norm = 0.00171 s
-Transonic-Pythran          : 0.763 * norm =  0.0013 s
-Numpy                      :  93.5 * norm =    0.16 s
-PicoNumpy (purepy)         :  48.7 * norm =  0.0831 s
-PicoNumpy (purepy_array)   :  44.4 * norm =  0.0757 s
-PicoNumpy (Cython)         :  32.9 * norm =  0.0561 s
-PicoNumpy (CPython C-API)  :  9.62 * norm =  0.0164 s
+Julia                      :     1 * norm = 0.00176 s
+Transonic-Pythran          :  0.73 * norm
+Numpy                      :  37.6 * norm
+PicoNumpy (purepy)         :  46.4 * norm
+PicoNumpy (purepy_array)   :  41.9 * norm
+PicoNumpy (Cython)         :  31.4 * norm
+PicoNumpy (CPython C-API)  :  9.22 * norm
 ```
 
 - With PyPy3
 
 ```raw
-Julia                      :     1 * norm = 0.00171 s
-Transonic-Pythran          :  0.83 * norm = 0.00142 s
-Numpy                      :   688 * norm =    1.17 s
-PicoNumpy (purepy)         :  5.06 * norm = 0.00862 s
-PicoNumpy (purepy_array)   :  7.77 * norm =  0.0133 s
-PicoNumpy (Cython)         :   263 * norm =   0.448 s
-PicoNumpy (CPython C-API)  :  67.3 * norm =   0.115 s
+Julia                      :     1 * norm = 0.00176 s
+Transonic-Pythran          : 0.797 * norm
+Numpy                      :   326 * norm
+PicoNumpy (purepy)         :  4.71 * norm
+PicoNumpy (purepy_array)   :  7.48 * norm
+PicoNumpy (Cython)         :   243 * norm
+PicoNumpy (CPython C-API)  :  36.6 * norm
 ```
 
 ## CPython C-API usage in PicoNumpy

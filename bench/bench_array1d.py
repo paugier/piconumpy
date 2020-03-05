@@ -1,6 +1,7 @@
 import numpy as np
 
-from numpy import pi, cos, sin, array
+from numpy import array
+from math import pi, cos, sin
 
 from transonic import jit
 

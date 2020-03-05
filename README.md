@@ -77,7 +77,7 @@ make
 
 As of today (5 March 2020), HPy is not yet ready!
 
-### On my computer at work (meige8pcpa79)
+### At work (meige8pcpa79, Intel(R) Xeon(R) CPU E5-1603 v3 @ 2.80GHz)
 
 - With CPython
 
@@ -101,6 +101,32 @@ PicoNumpy (purepy)         :  2.36 * norm =  0.0129 s
 PicoNumpy (purepy_array)   :  3.68 * norm =  0.0201 s
 PicoNumpy (Cython)         :   135 * norm =   0.737 s
 PicoNumpy (CPython C-API)  :  29.1 * norm =   0.158 s
+```
+
+### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
+
+- With CPython
+
+```raw
+Julia                      :     1 * norm = 0.00171 s
+Transonic-Pythran          : 0.763 * norm =  0.0013 s
+Numpy                      :  93.5 * norm =    0.16 s
+PicoNumpy (purepy)         :  48.7 * norm =  0.0831 s
+PicoNumpy (purepy_array)   :  44.4 * norm =  0.0757 s
+PicoNumpy (Cython)         :  32.9 * norm =  0.0561 s
+PicoNumpy (CPython C-API)  :  9.62 * norm =  0.0164 s
+```
+
+- With PyPy3
+
+```raw
+Julia                      :     1 * norm = 0.00171 s
+Transonic-Pythran          :  0.83 * norm = 0.00142 s
+Numpy                      :   688 * norm =    1.17 s
+PicoNumpy (purepy)         :  5.06 * norm = 0.00862 s
+PicoNumpy (purepy_array)   :  7.77 * norm =  0.0133 s
+PicoNumpy (Cython)         :   263 * norm =   0.448 s
+PicoNumpy (CPython C-API)  :  67.3 * norm =   0.115 s
 ```
 
 ## CPython C-API usage in PicoNumpy

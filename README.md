@@ -73,6 +73,36 @@ cd bench
 make
 ```
 
+## Few results
+
+As of today (5 March 2020), HPy is not yet ready!
+
+### On my computer at work (meige8pcpa79)
+
+- With CPython
+
+```raw
+Julia                      :     1 * norm = 0.00545 s
+Transonic-Pythran          : 0.552 * norm = 0.00301 s
+Numpy                      :  42.3 * norm =    0.23 s
+PicoNumpy (purepy)         :    23 * norm =   0.125 s
+PicoNumpy (purepy_array)   :  20.8 * norm =   0.113 s
+PicoNumpy (Cython)         :  15.4 * norm =  0.0841 s
+PicoNumpy (CPython C-API)  :  4.64 * norm =  0.0253 s
+```
+
+- With PyPy3
+
+```raw
+Julia                      :     1 * norm = 0.00545 s
+Transonic-Pythran          : 0.591 * norm = 0.00322 s
+Numpy                      :   351 * norm =    1.91 s
+PicoNumpy (purepy)         :  2.36 * norm =  0.0129 s
+PicoNumpy (purepy_array)   :  3.68 * norm =  0.0201 s
+PicoNumpy (Cython)         :   135 * norm =   0.737 s
+PicoNumpy (CPython C-API)  :  29.1 * norm =   0.158 s
+```
+
 ## CPython C-API usage in PicoNumpy
 
 It is the first time that I wrote a Python extension by hand (without Cython or

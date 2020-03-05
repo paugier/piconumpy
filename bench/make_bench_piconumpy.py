@@ -68,7 +68,7 @@ def timeit(name_func, name):
         max_length_name=max_length_name,
     )
 
-timeit("bench_pythran", name="Pythran")
+timeit("bench_pythran", name="Transonic-Pythran")
 timeit("bench_numpy", name="Numpy")
 timeit(
     "bench_piconumpy_purepy", name="PicoNumpy (purepy)",

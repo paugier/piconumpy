@@ -102,21 +102,21 @@ static ArrayObject *empty(PyObject *module, PyObject *arg) {
   return Array_empty(size);
 };
 
-static PyObject *module_cos(PyObject *module, PyObject *arg) {
-  PyObject *result = NULL;
-  if (PyNumber_Check(arg)) {
-    result = PyFloat_FromDouble(cos(PyFloat_AsDouble(arg)));
-  }
-  return result;
-};
+// static PyObject *module_cos(PyObject *module, PyObject *arg) {
+//   PyObject *result = NULL;
+//   if (PyNumber_Check(arg)) {
+//     result = PyFloat_FromDouble(cos(PyFloat_AsDouble(arg)));
+//   }
+//   return result;
+// };
 
-static PyObject *module_sin(PyObject *module, PyObject *arg) {
-  PyObject *result = NULL;
-  if (PyNumber_Check(arg)) {
-    result = PyFloat_FromDouble(sin(PyFloat_AsDouble(arg)));
-  }
-  return result;
-};
+// static PyObject *module_sin(PyObject *module, PyObject *arg) {
+//   PyObject *result = NULL;
+//   if (PyNumber_Check(arg)) {
+//     result = PyFloat_FromDouble(sin(PyFloat_AsDouble(arg)));
+//   }
+//   return result;
+// };
 
 static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
   int index;
@@ -194,8 +194,8 @@ PyFloatObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
 
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
-    {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
-    {"sin", (PyCFunction)module_sin, METH_O, "sinus."},
+    // {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
+    // {"sin", (PyCFunction)module_sin, METH_O, "sinus."},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 

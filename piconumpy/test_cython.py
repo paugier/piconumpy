@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._piconumpy_cython import array, sin, cos
+from ._piconumpy_cython import array
 
 
 def test_init_array():

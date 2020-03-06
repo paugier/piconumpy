@@ -1,7 +1,6 @@
 
-from math import cos, sin, pi
 
-__all__ = ["cos", "sin", "array", "pi"]
+__all__ = ["array"]
 
 import array as _array
 

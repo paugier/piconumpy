@@ -37,9 +37,8 @@ benchmark).
 The next task is to reimplement PicoNumpy using [HPy] and to check if PyPy
 could efficiently accelerate [our main benchmark](bench/bench_array1d.py).
 
-PicoNumpy is really tiny. It "just" has to provide an `array` class
-(one-dimensional) and two functions (`cos` and `sin`) acting on floats. The
-PicoNumpy array class "just" has to support:
+PicoNumpy is really tiny. It just provides an `array` class (one-dimensional)
+supporting:
 
 - Instantiation from a list of floats
 - Elementwise multiplication and division by a float
@@ -51,8 +50,8 @@ A good acceleration by PyPy of our example would be a great proof that the
 scientific Python community has to invest time and energy on [HPy].
 
 In the script [bench_array1d.py](bench/bench_array1d.py), Transonic is used for
-the benchmark and comparison. With Transonic-Pythran, we typically get a 100
-speedup compared to CPython (and ~500 versus PyPy, which is still very slow for
+the benchmark and comparison. With Transonic-Pythran, we typically get a 50
+speedup compared to CPython (and ~400 versus PyPy, which is still very slow for
 such codes using Numpy).
 
 [bench/bench_array1d.py]: https://github.com/paugier/piconumpy/blob/master/bench/bench_array1d.py

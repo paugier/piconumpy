@@ -1,6 +1,6 @@
 import numpy as np
 
-from .purepy_array import array, sin, cos
+from .purepy_array import array
 
 
 def test_init_array():

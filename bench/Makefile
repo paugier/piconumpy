@@ -15,3 +15,9 @@ clean:
 
 tmp_result_julia.txt:
 	julia bench.jl > tmp_result_julia.txt
+
+profile: tmp.py
+	$(PYTHON) profile_piconumpy.py
+	# with gprof2dot and graphviz (command dot)
+	gprof2dot -f pstats tmp.pstats | dot -Tpng -o tmp.png
+	eog tmp.png

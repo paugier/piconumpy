@@ -6,7 +6,7 @@ build
 *.so
 .vscode
 
-**/tmp*.py
-**/tmp*.txt
+**/tmp*.*
+**/tmp*.*
 
 *_cython.c

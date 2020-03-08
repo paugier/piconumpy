@@ -74,6 +74,17 @@ cd bench
 make
 ```
 
+The benchmark code can be profiled for the different implementations with the
+commands (you need gprof2dot and graphviz):
+
+```bash
+cd bench
+make profile METHOD="cpython-c-api"
+make profile METHOD="purepy_array"
+make profile METHOD="purepy"
+make profile METHOD="cython"
+```
+
 ## Few results
 
 As of today (5 March 2020), HPy is not yet ready!

@@ -3,6 +3,10 @@ ifeq ($(PYTHON),)
 PYTHON := python
 endif
 
+ifeq ($(METHOD),)
+METHOD := cpython-c-api
+endif
+
 all: tmp.py tmp_result_julia.txt
 	$(PYTHON) tmp.py
 
@@ -17,7 +21,7 @@ tmp_result_julia.txt:
 	julia bench.jl > tmp_result_julia.txt
 
 profile: tmp.py
-	$(PYTHON) profile_piconumpy.py
+	$(PYTHON) profile_piconumpy.py $(METHOD)
 	# with gprof2dot and graphviz (command dot)
-	gprof2dot -f pstats tmp.pstats | dot -Tpng -o tmp.png
-	eog tmp.png
+	gprof2dot -f pstats tmp.pstats | dot -Tpng -o tmp_$(METHOD).png
+	eog tmp_$(METHOD).png

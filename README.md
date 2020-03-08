@@ -1,5 +1,7 @@
 # PicoNumpy
 
+[![Build Status](https://travis-ci.org/paugier/piconumpy.svg?branch=master)](https://travis-ci.org/paugier/piconumpy)
+
 **An experiment about Numpy and pyhandle/hpy**
 
 The C API of CPython is one of the cause of the success of Python in scientific

@@ -1,9 +1,6 @@
-from math import cos, sin, pi
-
-__all__ = ["cos", "sin", "array", "pi"]
-
-
 class array:
+    __slots__ = ["data", "size"]
+
     def __init__(self, data):
         self.data = list(float(number) for number in data)
         self.size = len(self.data)

@@ -26,6 +26,8 @@ import array as _array
 
 
 class array:
+    __slots__ = ["data", "size"]
+
     def __init__(self, data):
         self.data = _array.array("f", data)
         self.size = len(self.data)

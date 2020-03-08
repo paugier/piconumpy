@@ -1,11 +1,9 @@
-from math import cos, sin, pi
-
-__all__ = ["cos", "sin", "array", "pi"]
-
 import array as _array
 
 
 class array(_array.array):
+    __slots__ = ["size"]
+
     def __new__(cls, *args):
         return super().__new__(cls, "f", *args)
 

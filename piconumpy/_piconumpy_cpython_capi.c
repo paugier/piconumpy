@@ -140,36 +140,33 @@ static PyMethodDef Array_methods[] = {
     {NULL} /* Sentinel */
 };
 
-static PyNumberMethods Array_number_methods = {
-    .nb_multiply = (binaryfunc)Array_multiply,
-    .nb_add = (binaryfunc)Array_add,
-    .nb_true_divide = (binaryfunc)Array_divide,
-};
-static PySequenceMethods Array_sequence_methods = {
-    .sq_length = (lenfunc)Array_length,
-    .sq_item = (ssizeargfunc)Array_item,
+static const PyType_Slot Array_type_slots[] = {
+    {Py_tp_new, PyType_GenericNew},
+    {Py_tp_init, (initproc)Array_init},
+    {Py_tp_dealloc, (destructor)Array_dealloc},
+    {Py_tp_members, Array_members},
+    {Py_tp_methods, Array_methods},
+    {Py_nb_multiply, (binaryfunc)Array_multiply},
+    {Py_nb_add, (binaryfunc)Array_add},
+    {Py_nb_true_divide, (binaryfunc)Array_divide},
+    {Py_sq_length, (lenfunc)Array_length},
+    {Py_sq_item, (ssizeargfunc)Array_item},
+    {0, NULL},
 };
 
-static PyTypeObject ArrayType = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-
-        .tp_name = "_piconumpy_cpython_capi.array",
-    .tp_doc = "Array objects",
-    .tp_basicsize = sizeof(ArrayObject),
-    .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyType_GenericNew,
-    .tp_init = (initproc)Array_init,
-    .tp_dealloc = (destructor)Array_dealloc,
-    .tp_members = Array_members,
-    .tp_methods = Array_methods,
-    .tp_as_number = &Array_number_methods,
-    .tp_as_sequence = &Array_sequence_methods,
+static const PyType_Spec Array_type_spec = {
+    .name = "_piconumpy_cpython_capi.array",
+    .basicsize = sizeof(ArrayObject),
+    .itemsize = 0,
+    .flags = Py_TPFLAGS_DEFAULT,
+    .slots = Array_type_slots,
 };
+
+PyTypeObject *ptr_ArrayType;
 
 static ArrayObject *Array_empty(int size) {
   ArrayObject *new_array = NULL;
-  new_array = PyObject_New(ArrayObject, &ArrayType);
+  new_array = PyObject_New(ArrayObject, ptr_ArrayType);
   new_array->size = size;
   new_array->data = (double *)malloc(size * sizeof(double));
   if (new_array->data == NULL)
@@ -182,7 +179,6 @@ static ArrayObject *empty(PyObject *module, PyObject *arg) {
   size = (int)PyLong_AsLong(arg);
   return Array_empty(size);
 };
-
 
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
@@ -197,16 +193,15 @@ static PyModuleDef piconumpymodule = {
 PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   PyObject *m;
 
-  if (PyType_Ready(&ArrayType) < 0)
-    return NULL;
+  ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
 
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)
     return NULL;
 
-  Py_INCREF(&ArrayType);
-  if (PyModule_AddObject(m, "array", (PyObject *)&ArrayType) < 0) {
-    Py_DECREF(&ArrayType);
+  Py_INCREF(ptr_ArrayType);
+  if (PyModule_AddObject(m, "array", (PyObject *)ptr_ArrayType) < 0) {
+    Py_DECREF(ptr_ArrayType);
     Py_DECREF(m);
     return NULL;
   }

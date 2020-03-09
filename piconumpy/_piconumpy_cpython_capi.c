@@ -60,64 +60,6 @@ static PyObject *Array_tolist(ArrayObject *self, PyObject *Py_UNUSED(ignored)) {
 
 static ArrayObject *Array_empty(int size);
 
-static PyMethodDef Array_methods[] = {
-    {"tolist", (PyCFunction)Array_tolist, METH_NOARGS,
-     "Return the data as a list"},
-    {NULL} /* Sentinel */
-};
-
-static PyNumberMethods number_methods = {NULL};
-static PySequenceMethods sequence_methods = {NULL};
-
-static PyTypeObject ArrayType = {
-    PyVarObject_HEAD_INIT(NULL, 0)
-
-        .tp_name = "_piconumpy_cpython_capi.array",
-    .tp_doc = "Array objects",
-    .tp_basicsize = sizeof(ArrayObject),
-    .tp_itemsize = 0,
-    .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyType_GenericNew,
-    .tp_init = (initproc)Array_init,
-    .tp_dealloc = (destructor)Array_dealloc,
-    .tp_members = Array_members,
-    .tp_methods = Array_methods,
-    .tp_as_number = &number_methods,
-    .tp_as_sequence = &sequence_methods,
-};
-
-static ArrayObject *Array_empty(int size) {
-  ArrayObject *new_array = NULL;
-  new_array = PyObject_New(ArrayObject, &ArrayType);
-  new_array->size = size;
-  new_array->data = (double *)malloc(size * sizeof(double));
-  if (new_array->data == NULL)
-    return PyErr_NoMemory();
-  return new_array;
-};
-
-static ArrayObject *empty(PyObject *module, PyObject *arg) {
-  int size;
-  size = (int)PyLong_AsLong(arg);
-  return Array_empty(size);
-};
-
-// static PyObject *module_cos(PyObject *module, PyObject *arg) {
-//   PyObject *result = NULL;
-//   if (PyNumber_Check(arg)) {
-//     result = PyFloat_FromDouble(cos(PyFloat_AsDouble(arg)));
-//   }
-//   return result;
-// };
-
-// static PyObject *module_sin(PyObject *module, PyObject *arg) {
-//   PyObject *result = NULL;
-//   if (PyNumber_Check(arg)) {
-//     result = PyFloat_FromDouble(sin(PyFloat_AsDouble(arg)));
-//   }
-//   return result;
-// };
-
 static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
   int index;
   double number;
@@ -192,10 +134,58 @@ PyFloatObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
   return item;
 };
 
+static PyMethodDef Array_methods[] = {
+    {"tolist", (PyCFunction)Array_tolist, METH_NOARGS,
+     "Return the data as a list"},
+    {NULL} /* Sentinel */
+};
+
+static PyNumberMethods Array_number_methods = {
+    .nb_multiply = (binaryfunc)Array_multiply,
+    .nb_add = (binaryfunc)Array_add,
+    .nb_true_divide = (binaryfunc)Array_divide,
+};
+static PySequenceMethods Array_sequence_methods = {
+    .sq_length = (lenfunc)Array_length,
+    .sq_item = (ssizeargfunc)Array_item,
+};
+
+static PyTypeObject ArrayType = {
+    PyVarObject_HEAD_INIT(NULL, 0)
+
+        .tp_name = "_piconumpy_cpython_capi.array",
+    .tp_doc = "Array objects",
+    .tp_basicsize = sizeof(ArrayObject),
+    .tp_itemsize = 0,
+    .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_new = PyType_GenericNew,
+    .tp_init = (initproc)Array_init,
+    .tp_dealloc = (destructor)Array_dealloc,
+    .tp_members = Array_members,
+    .tp_methods = Array_methods,
+    .tp_as_number = &Array_number_methods,
+    .tp_as_sequence = &Array_sequence_methods,
+};
+
+static ArrayObject *Array_empty(int size) {
+  ArrayObject *new_array = NULL;
+  new_array = PyObject_New(ArrayObject, &ArrayType);
+  new_array->size = size;
+  new_array->data = (double *)malloc(size * sizeof(double));
+  if (new_array->data == NULL)
+    return PyErr_NoMemory();
+  return new_array;
+};
+
+static ArrayObject *empty(PyObject *module, PyObject *arg) {
+  int size;
+  size = (int)PyLong_AsLong(arg);
+  return Array_empty(size);
+};
+
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
-    // {"cos", (PyCFunction)module_cos, METH_O, "cosinus."},
-    // {"sin", (PyCFunction)module_sin, METH_O, "sinus."},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 
@@ -206,13 +196,6 @@ static PyModuleDef piconumpymodule = {
 
 PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   PyObject *m;
-
-  ArrayType.tp_as_number->nb_multiply = (binaryfunc)Array_multiply;
-  ArrayType.tp_as_number->nb_add = (binaryfunc)Array_add;
-  ArrayType.tp_as_number->nb_true_divide = (binaryfunc)Array_divide;
-
-  ArrayType.tp_as_sequence->sq_length = (lenfunc)Array_length;
-  ArrayType.tp_as_sequence->sq_item = (ssizeargfunc)Array_item;
 
   if (PyType_Ready(&ArrayType) < 0)
     return NULL;

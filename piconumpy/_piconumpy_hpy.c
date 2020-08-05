@@ -1,7 +1,8 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-
 #include "structmember.h"
+
+#include "hpy.h"
 
 typedef struct {
   PyObject_HEAD
@@ -180,31 +181,34 @@ static ArrayObject *empty(PyObject *module, PyObject *arg) {
   return Array_empty(size);
 };
 
-static PyMethodDef module_methods[] = {
+static PyMethodDef legacy_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 
-static PyModuleDef piconumpymodule = {
-    PyModuleDef_HEAD_INIT, .m_name = "_piconumpy_hpy",
-    .m_doc = "piconumpy implemented with the HPy API.", .m_size = -1,
-    module_methods};
+static HPyModuleDef piconumpymodule = {
+    HPyModuleDef_HEAD_INIT,
+    .m_name = "_piconumpy_hpy",
+    .m_doc = "piconumpy implemented with the HPy API.",
+    .m_size = -1,
+    .legacy_methods = legacy_methods
+};
 
-PyMODINIT_FUNC PyInit__piconumpy_hpy(void) {
-  PyObject *m;
+HPy_MODINIT(_piconumpy_hpy)
+static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
+  HPy hm = HPyModule_Create(ctx, &piconumpymodule);
+  if (HPy_IsNull(hm))
+    return HPy_NULL;
 
+  PyObject *m = HPy_AsPyObject(ctx, hm);
   ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-
-  m = PyModule_Create(&piconumpymodule);
-  if (m == NULL)
-    return NULL;
-
   Py_INCREF(ptr_ArrayType);
   if (PyModule_AddObject(m, "array", (PyObject *)ptr_ArrayType) < 0) {
     Py_DECREF(ptr_ArrayType);
     Py_DECREF(m);
-    return NULL;
+    HPy_Close(ctx, hm);
+    return HPy_NULL;
   }
 
-  return m;
+  return hm;
 }

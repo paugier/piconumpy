@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages, Extension
-
+import hpy.devel
 from Cython.Build import cythonize
 
 setup(
@@ -17,7 +17,8 @@ setup(
         ),
         Extension(
             "piconumpy._piconumpy_hpy",
-            ["piconumpy/_piconumpy_hpy.c"],
+            ["piconumpy/_piconumpy_hpy.c"] + hpy.devel.get_sources(),
+            include_dirs=[hpy.devel.get_include()],
         ),
         *cythonize("piconumpy/_piconumpy_cython.pyx"),
     ],

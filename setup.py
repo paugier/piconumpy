@@ -15,6 +15,10 @@ setup(
             "piconumpy._piconumpy_cpython_capi",
             ["piconumpy/_piconumpy_cpython_capi.c"],
         ),
+        Extension(
+            "piconumpy._piconumpy_hpy",
+            ["piconumpy/_piconumpy_hpy.c"],
+        ),
         *cythonize("piconumpy/_piconumpy_cython.pyx"),
     ],
 )

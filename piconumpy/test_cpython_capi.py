@@ -1,10 +1,17 @@
 import numpy as np
 
-from . import array
+from . import _piconumpy_cpython_capi
 
 
 class Tests:
-    _array = array
+    piconumpy = _piconumpy_cpython_capi
+    def _array(self, *args):
+        return self.piconumpy.array(*args)
+
+    def test_empty(self):
+        a = self.piconumpy.empty(12)
+        assert type(a) is self.piconumpy.array
+        assert a.size == 12
 
     def test_init_array(self):
         a = self._array([1.0, 2.0])

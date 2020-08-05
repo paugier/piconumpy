@@ -22,3 +22,6 @@ class array(_array.array):
 
     def __truediv__(self, other):
         return self.__class__(number / other for number in self)
+
+def empty(size):
+    return array([0]*size)

@@ -53,3 +53,6 @@ class array:
 
     def __getitem__(self, index):
         return self.data[index]
+
+cpdef empty(size):
+    return array([0]*size)

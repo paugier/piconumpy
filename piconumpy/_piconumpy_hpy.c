@@ -131,8 +131,11 @@ static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
   return result;
 };
 
-Py_ssize_t Array_length(ArrayObject *arr) {
-  Py_ssize_t result = (Py_ssize_t)arr->size;
+
+HPyDef_SLOT(Array_length, HPy_sq_length, Array_length_impl, HPyFunc_LENFUNC)
+HPy_ssize_t Array_length_impl(HPyContext ctx, HPy h_arr) {
+  ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
+  HPy_ssize_t result = (HPy_ssize_t)arr->size;
   return result;
 };
 
@@ -160,7 +163,6 @@ static PyType_Slot Array_type_slots[] = {
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
     {Py_nb_true_divide, (binaryfunc)Array_divide},
-    {Py_sq_length, (lenfunc)Array_length},
     {0, NULL},
 };
 
@@ -168,6 +170,7 @@ static HPyDef *Array_defines[] = {
     &Array_add,
     &Array_multiply,
     &Array_item,
+    &Array_length,
     NULL
 };
 

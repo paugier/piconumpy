@@ -202,7 +202,6 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
 
   PyObject *m = HPy_AsPyObject(ctx, hm);
   ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-  Py_INCREF(ptr_ArrayType);
   if (PyModule_AddObject(m, "array", (PyObject *)ptr_ArrayType) < 0) {
     Py_DECREF(ptr_ArrayType);
     Py_DECREF(m);

@@ -136,12 +136,14 @@ Py_ssize_t Array_length(ArrayObject *arr) {
   return result;
 };
 
-PyObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
-  PyObject *item = NULL;
+
+HPyDef_SLOT(Array_item, HPy_sq_item, Array_item_impl, HPyFunc_SSIZEARGFUNC)
+HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
+  ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
   if (index < 0 || index >= arr->size) {
-    return item;
+    return HPy_NULL;
   }
-  item = PyFloat_FromDouble(arr->data[index]);
+  HPy item = HPyFloat_FromDouble(ctx, arr->data[index]);
   return item;
 };
 
@@ -159,13 +161,13 @@ static PyType_Slot Array_type_slots[] = {
     {Py_tp_methods, Array_methods},
     {Py_nb_true_divide, (binaryfunc)Array_divide},
     {Py_sq_length, (lenfunc)Array_length},
-    {Py_sq_item, (ssizeargfunc)Array_item},
     {0, NULL},
 };
 
 static HPyDef *Array_defines[] = {
     &Array_add,
     &Array_multiply,
+    &Array_item,
     NULL
 };
 

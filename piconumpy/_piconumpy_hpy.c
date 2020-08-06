@@ -157,15 +157,16 @@ static PyType_Slot Array_type_slots[] = {
     {0, NULL},
 };
 
-static PyType_Spec Array_type_spec = {
+static HPyType_Spec Array_type_spec = {
     .name = "_piconumpy_hpy.array",
     .basicsize = sizeof(ArrayObject),
     .itemsize = 0,
-    .flags = Py_TPFLAGS_DEFAULT,
-    .slots = Array_type_slots,
+    .flags = HPy_TPFLAGS_DEFAULT,
+    .legacy_slots = Array_type_slots,
 };
 
 PyTypeObject *ptr_ArrayType;
+HPy h_ArrayType;
 
 static ArrayObject *Array_empty(int size) {
   ArrayObject *new_array = NULL;
@@ -210,12 +211,14 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
   if (HPy_IsNull(hm))
     return HPy_NULL;
 
-  ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-  HPy h_ArrayType = HPy_FromPyObject(ctx, (PyObject *)ptr_ArrayType);
-  Py_DECREF(ptr_ArrayType);
+  h_ArrayType = HPyType_FromSpec(ctx, &Array_type_spec);
+  if (HPy_IsNull(h_ArrayType))
+      return HPy_NULL;
+  ptr_ArrayType = (PyTypeObject *)HPy_AsPyObject(ctx, h_ArrayType);
 
   if (HPy_SetAttr_s(ctx, hm, "array", h_ArrayType) < 0) {
     HPy_Close(ctx, h_ArrayType);
+    Py_DECREF(ptr_ArrayType);
     HPy_Close(ctx, hm);
     return HPy_NULL;
   }

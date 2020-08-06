@@ -32,8 +32,10 @@ static int Array_init(ArrayObject *self, PyObject *args, PyObject *kwds) {
   self->size = (int)PyList_Size(data);
 
   self->data = (double *)malloc(self->size * sizeof(double));
-  if (self->data == NULL)
-    return PyErr_NoMemory();
+  if (self->data == NULL) {
+    PyErr_NoMemory();
+    return -1;
+  }
 
   for (index = 0; index < self->size; index++) {
     item = PyList_GET_ITEM(data, index);
@@ -64,15 +66,15 @@ static ArrayObject *Array_empty(int size);
 static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
   int index;
   double number;
-  PyObject *obj_number;
-  ArrayObject *result = NULL, *arr;
+  PyObject *obj_number = NULL;
+  ArrayObject *result = NULL, *arr = NULL;
 
   if (PyNumber_Check(o2)) {
     obj_number = o2;
-    arr = o1;
+    arr = (ArrayObject *)o1;
   } else if (PyNumber_Check(o1)) {
     obj_number = o1;
-    arr = o2;
+    arr = (ArrayObject *)o2;
   }
 
   if (PyNumber_Check(o1) | PyNumber_Check(o2)) {
@@ -89,8 +91,8 @@ static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
 static ArrayObject *Array_add(PyObject *o1, PyObject *o2) {
   int index;
   ArrayObject *result = NULL, *a1, *a2;
-  a1 = o1;
-  a2 = o2;
+  a1 = (ArrayObject *)o1;
+  a2 = (ArrayObject *)o2;
 
   if (a1->size != a2->size)
     return result;
@@ -111,7 +113,7 @@ static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
   if (!PyNumber_Check(o2)) {
     return result;
   }
-  a1 = o1;
+  a1 = (ArrayObject *)o1;
   number = PyFloat_AsDouble(o2);
   result = Array_empty(a1->size);
   for (index = 0; index < a1->size; index++) {
@@ -126,9 +128,9 @@ Py_ssize_t Array_length(ArrayObject *arr) {
   return result;
 };
 
-PyFloatObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
-  PyFloatObject *item = NULL;
-  if (index < 0 | index >= arr->size) {
+PyObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
+  PyObject *item = NULL;
+  if (index < 0 || index >= arr->size) {
     return item;
   }
   item = PyFloat_FromDouble(arr->data[index]);
@@ -141,7 +143,7 @@ static PyMethodDef Array_methods[] = {
     {NULL} /* Sentinel */
 };
 
-static const PyType_Slot Array_type_slots[] = {
+static PyType_Slot Array_type_slots[] = {
     {Py_tp_new, PyType_GenericNew},
     {Py_tp_init, (initproc)Array_init},
     {Py_tp_dealloc, (destructor)Array_dealloc},
@@ -155,7 +157,7 @@ static const PyType_Slot Array_type_slots[] = {
     {0, NULL},
 };
 
-static const PyType_Spec Array_type_spec = {
+static PyType_Spec Array_type_spec = {
     .name = "_piconumpy_hpy.array",
     .basicsize = sizeof(ArrayObject),
     .itemsize = 0,
@@ -170,8 +172,10 @@ static ArrayObject *Array_empty(int size) {
   new_array = PyObject_New(ArrayObject, ptr_ArrayType);
   new_array->size = size;
   new_array->data = (double *)malloc(size * sizeof(double));
-  if (new_array->data == NULL)
-    return PyErr_NoMemory();
+  if (new_array->data == NULL) {
+     PyErr_NoMemory();
+     return NULL;
+  }
   return new_array;
 };
 
@@ -180,7 +184,7 @@ HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O)
 static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   int size;
   size = (int)HPyLong_AsLong(ctx, arg);
-  PyObject *result = Array_empty(size);
+  PyObject *result = (PyObject *)Array_empty(size);
   HPy h_result = HPy_FromPyObject(ctx, result);
   Py_DECREF(result);
   return h_result;
@@ -207,7 +211,7 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
     return HPy_NULL;
 
   ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-  HPy h_ArrayType = HPy_FromPyObject(ctx, ptr_ArrayType);
+  HPy h_ArrayType = HPy_FromPyObject(ctx, (PyObject *)ptr_ArrayType);
   Py_DECREF(ptr_ArrayType);
 
   if (HPy_SetAttr_s(ctx, hm, "array", h_ArrayType) < 0) {

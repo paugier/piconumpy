@@ -23,6 +23,10 @@ setup(
             "piconumpy._piconumpy_hpy",
             ["piconumpy/_piconumpy_hpy.c"] + hpy.devel.get_sources(),
             include_dirs=[hpy.devel.get_include()],
+            extra_compile_args = [
+                '-Wfatal-errors',    # stop after one error (unrelated to warnings)
+                '-Werror',           # turn warnings into errors (all, for now)
+            ]
         ),
         *cythonize("piconumpy/_piconumpy_cython.pyx"),
     ],

@@ -5,9 +5,9 @@
 #include "hpy.h"
 
 typedef struct {
-  PyObject_HEAD
-      /* Type-specific fields go here. */
-      double *data;
+  HPyObject_HEAD
+  /* Type-specific fields go here. */
+  double *data;
   int size;
 } ArrayObject;
 
@@ -61,7 +61,7 @@ static PyObject *Array_tolist(ArrayObject *self, PyObject *Py_UNUSED(ignored)) {
   return result;
 };
 
-static ArrayObject *Array_empty(int size);
+static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result);
 
 HPyDef_SLOT(Array_multiply, HPy_nb_multiply, Array_multiply_impl,
             HPyFunc_BINARYFUNC)
@@ -70,6 +70,7 @@ static HPy Array_multiply_impl(HPyContext ctx, HPy h1, HPy h2) {
   double number;
   HPy h_number = HPy_NULL;
   ArrayObject *result = NULL, *arr = NULL;
+  HPy h_result = HPy_NULL;
 
   if (HPyNumber_Check(ctx, h2)) {
     h_number = h2;
@@ -81,15 +82,12 @@ static HPy Array_multiply_impl(HPyContext ctx, HPy h1, HPy h2) {
 
   if (HPyNumber_Check(ctx, h1) || HPyNumber_Check(ctx, h2)) {
     number = HPyFloat_AsDouble(ctx, h_number);
-    result = Array_empty(arr->size);
+    h_result = Array_empty(ctx, arr->size, &result);
     for (index = 0; index < arr->size; index++) {
       result->data[index] = arr->data[index] * number;
     }
   }
   /* XXX exception if result is still NULL here */
-
-  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
-  Py_DECREF(result);
   return h_result;
 };
 
@@ -97,19 +95,17 @@ HPyDef_SLOT(Array_add, HPy_nb_add, Array_add_impl, HPyFunc_BINARYFUNC)
 static HPy Array_add_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   ArrayObject *result = NULL, *a1, *a2;
+  HPy h_result = HPy_NULL;
   a1 = HPy_CAST(ctx, ArrayObject, h1);
   a2 = HPy_CAST(ctx, ArrayObject, h2);
 
   if (a1->size != a2->size)
     return HPy_NULL;   /* XXX should raise an exception */
 
-  result = Array_empty(a1->size);
+  h_result = Array_empty(ctx, a1->size, &result);
   for (index = 0; index < a1->size; index++) {
     result->data[index] = a1->data[index] + a2->data[index];
   }
-
-  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
-  Py_DECREF(result);
   return h_result;
 };
 
@@ -118,19 +114,17 @@ static HPy Array_divide_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   double number;
   ArrayObject *result = NULL, *a1;
+  HPy h_result = HPy_NULL;
 
   if (!HPyNumber_Check(ctx, h2)) {
     return HPy_NULL;
   }
   a1 = HPy_CAST(ctx, ArrayObject, h1);
   number = HPyFloat_AsDouble(ctx, h2);
-  result = Array_empty(a1->size);
+  h_result = Array_empty(ctx, a1->size, &result);
   for (index = 0; index < a1->size; index++) {
     result->data[index] = a1->data[index] / number;
   }
-
-  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
-  Py_DECREF(result);
   return h_result;
 };
 
@@ -192,27 +186,25 @@ static HPyType_Spec Array_type_spec = {
 PyTypeObject *ptr_ArrayType;
 HPy h_ArrayType;
 
-static ArrayObject *Array_empty(int size) {
-  ArrayObject *new_array = NULL;
-  new_array = PyObject_New(ArrayObject, ptr_ArrayType);
+static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result) {
+  ArrayObject *new_array;
+  HPy h_new_array = HPy_New(ctx, h_ArrayType, &new_array);
   new_array->size = size;
   new_array->data = (double *)malloc(size * sizeof(double));
   if (new_array->data == NULL) {
-     PyErr_NoMemory();
-     return NULL;
+     return HPyErr_NoMemory(ctx);
   }
-  return new_array;
+  *result = new_array;
+  return h_new_array;
 };
 
 /* XXX add the docstring: "Create an empty array" */
 HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O)
 static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   int size;
+  ArrayObject *result;
   size = (int)HPyLong_AsLong(ctx, arg);
-  PyObject *result = (PyObject *)Array_empty(size);
-  HPy h_result = HPy_FromPyObject(ctx, result);
-  Py_DECREF(result);
-  return h_result;
+  return Array_empty(ctx, size, &result);
 };
 
 

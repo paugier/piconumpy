@@ -175,15 +175,21 @@ static ArrayObject *Array_empty(int size) {
   return new_array;
 };
 
-static ArrayObject *empty(PyObject *module, PyObject *arg) {
+/* XXX add the docstring: "Create an empty array" */
+HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O)
+static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   int size;
-  size = (int)PyLong_AsLong(arg);
-  return Array_empty(size);
+  size = (int)HPyLong_AsLong(ctx, arg);
+  PyObject *result = Array_empty(size);
+  HPy h_result = HPy_FromPyObject(ctx, result);
+  Py_DECREF(result);
+  return h_result;
 };
 
-static PyMethodDef legacy_methods[] = {
-    {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
-    {NULL, NULL, 0, NULL} /* Sentinel */
+
+static HPyDef *module_defines[] = {
+    &empty,
+    NULL
 };
 
 static HPyModuleDef piconumpymodule = {
@@ -191,7 +197,7 @@ static HPyModuleDef piconumpymodule = {
     .m_name = "_piconumpy_hpy",
     .m_doc = "piconumpy implemented with the HPy API.",
     .m_size = -1,
-    .legacy_methods = legacy_methods
+    .defines = module_defines,
 };
 
 HPy_MODINIT(_piconumpy_hpy)

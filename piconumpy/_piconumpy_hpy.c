@@ -63,29 +63,34 @@ static PyObject *Array_tolist(ArrayObject *self, PyObject *Py_UNUSED(ignored)) {
 
 static ArrayObject *Array_empty(int size);
 
-static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
+HPyDef_SLOT(Array_multiply, HPy_nb_multiply, Array_multiply_impl,
+            HPyFunc_BINARYFUNC)
+static HPy Array_multiply_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   double number;
-  PyObject *obj_number = NULL;
+  HPy h_number = HPy_NULL;
   ArrayObject *result = NULL, *arr = NULL;
 
-  if (PyNumber_Check(o2)) {
-    obj_number = o2;
-    arr = (ArrayObject *)o1;
-  } else if (PyNumber_Check(o1)) {
-    obj_number = o1;
-    arr = (ArrayObject *)o2;
+  if (HPyNumber_Check(ctx, h2)) {
+    h_number = h2;
+    arr = HPy_CAST(ctx, ArrayObject, h1);
+  } else if (HPyNumber_Check(ctx, h1)) {
+    h_number = h1;
+    arr = HPy_CAST(ctx, ArrayObject, h2);
   }
 
-  if (PyNumber_Check(o1) | PyNumber_Check(o2)) {
-    number = PyFloat_AsDouble(obj_number);
+  if (HPyNumber_Check(ctx, h1) || HPyNumber_Check(ctx, h2)) {
+    number = HPyFloat_AsDouble(ctx, h_number);
     result = Array_empty(arr->size);
     for (index = 0; index < arr->size; index++) {
       result->data[index] = arr->data[index] * number;
     }
   }
+  /* XXX exception if result is still NULL here */
 
-  return result;
+  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
+  Py_DECREF(result);
+  return h_result;
 };
 
 HPyDef_SLOT(Array_add, HPy_nb_add, Array_add_impl, HPyFunc_BINARYFUNC)
@@ -152,7 +157,6 @@ static PyType_Slot Array_type_slots[] = {
     {Py_tp_dealloc, (destructor)Array_dealloc},
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
-    {Py_nb_multiply, (binaryfunc)Array_multiply},
     {Py_nb_true_divide, (binaryfunc)Array_divide},
     {Py_sq_length, (lenfunc)Array_length},
     {Py_sq_item, (ssizeargfunc)Array_item},
@@ -161,6 +165,7 @@ static PyType_Slot Array_type_slots[] = {
 
 static HPyDef *Array_defines[] = {
     &Array_add,
+    &Array_multiply,
     NULL
 };
 

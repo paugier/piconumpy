@@ -14,6 +14,10 @@ setup(
         Extension(
             "piconumpy._piconumpy_cpython_capi",
             ["piconumpy/_piconumpy_cpython_capi.c"],
+            extra_compile_args = [
+                '-Wfatal-errors',    # stop after one error (unrelated to warnings)
+                '-Werror',           # turn warnings into errors (all, for now)
+            ]
         ),
         Extension(
             "piconumpy._piconumpy_hpy",

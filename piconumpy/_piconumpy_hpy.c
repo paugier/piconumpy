@@ -88,21 +88,24 @@ static ArrayObject *Array_multiply(PyObject *o1, PyObject *o2) {
   return result;
 };
 
-static ArrayObject *Array_add(PyObject *o1, PyObject *o2) {
+HPyDef_SLOT(Array_add, HPy_nb_add, Array_add_impl, HPyFunc_BINARYFUNC)
+static HPy Array_add_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   ArrayObject *result = NULL, *a1, *a2;
-  a1 = (ArrayObject *)o1;
-  a2 = (ArrayObject *)o2;
+  a1 = HPy_CAST(ctx, ArrayObject, h1);
+  a2 = HPy_CAST(ctx, ArrayObject, h2);
 
   if (a1->size != a2->size)
-    return result;
+    return HPy_NULL;   /* XXX should raise an exception */
 
   result = Array_empty(a1->size);
   for (index = 0; index < a1->size; index++) {
     result->data[index] = a1->data[index] + a2->data[index];
   }
 
-  return result;
+  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
+  Py_DECREF(result);
+  return h_result;
 };
 
 static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
@@ -150,11 +153,15 @@ static PyType_Slot Array_type_slots[] = {
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
     {Py_nb_multiply, (binaryfunc)Array_multiply},
-    {Py_nb_add, (binaryfunc)Array_add},
     {Py_nb_true_divide, (binaryfunc)Array_divide},
     {Py_sq_length, (lenfunc)Array_length},
     {Py_sq_item, (ssizeargfunc)Array_item},
     {0, NULL},
+};
+
+static HPyDef *Array_defines[] = {
+    &Array_add,
+    NULL
 };
 
 static HPyType_Spec Array_type_spec = {
@@ -163,6 +170,7 @@ static HPyType_Spec Array_type_spec = {
     .itemsize = 0,
     .flags = HPy_TPFLAGS_DEFAULT,
     .legacy_slots = Array_type_slots,
+    .defines = Array_defines,
 };
 
 PyTypeObject *ptr_ArrayType;

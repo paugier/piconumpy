@@ -159,8 +159,10 @@ static PyMethodDef Array_methods[] = {
     {NULL} /* Sentinel */
 };
 
+
+HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
+
 static PyType_Slot Array_type_slots[] = {
-    {Py_tp_new, PyType_GenericNew},
     {Py_tp_init, (initproc)Array_init},
     {Py_tp_dealloc, (destructor)Array_dealloc},
     {Py_tp_members, Array_members},
@@ -169,6 +171,7 @@ static PyType_Slot Array_type_slots[] = {
 };
 
 static HPyDef *Array_defines[] = {
+    &Array_new,
     &Array_add,
     &Array_multiply,
     &Array_divide,

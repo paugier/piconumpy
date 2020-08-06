@@ -113,22 +113,25 @@ static HPy Array_add_impl(HPyContext ctx, HPy h1, HPy h2) {
   return h_result;
 };
 
-static ArrayObject *Array_divide(PyObject *o1, PyObject *o2) {
+HPyDef_SLOT(Array_divide, HPy_nb_true_divide, Array_divide_impl, HPyFunc_BINARYFUNC)
+static HPy Array_divide_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   double number;
   ArrayObject *result = NULL, *a1;
 
-  if (!PyNumber_Check(o2)) {
-    return result;
+  if (!HPyNumber_Check(ctx, h2)) {
+    return HPy_NULL;
   }
-  a1 = (ArrayObject *)o1;
-  number = PyFloat_AsDouble(o2);
+  a1 = HPy_CAST(ctx, ArrayObject, h1);
+  number = HPyFloat_AsDouble(ctx, h2);
   result = Array_empty(a1->size);
   for (index = 0; index < a1->size; index++) {
     result->data[index] = a1->data[index] / number;
   }
 
-  return result;
+  HPy h_result = HPy_FromPyObject(ctx, (PyObject *)result);
+  Py_DECREF(result);
+  return h_result;
 };
 
 
@@ -162,13 +165,13 @@ static PyType_Slot Array_type_slots[] = {
     {Py_tp_dealloc, (destructor)Array_dealloc},
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
-    {Py_nb_true_divide, (binaryfunc)Array_divide},
     {0, NULL},
 };
 
 static HPyDef *Array_defines[] = {
     &Array_add,
     &Array_multiply,
+    &Array_divide,
     &Array_item,
     &Array_length,
     NULL

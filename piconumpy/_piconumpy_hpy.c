@@ -200,11 +200,12 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
   if (HPy_IsNull(hm))
     return HPy_NULL;
 
-  PyObject *m = HPy_AsPyObject(ctx, hm);
   ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-  if (PyModule_AddObject(m, "array", (PyObject *)ptr_ArrayType) < 0) {
-    Py_DECREF(ptr_ArrayType);
-    Py_DECREF(m);
+  HPy h_ArrayType = HPy_FromPyObject(ctx, ptr_ArrayType);
+  Py_DECREF(ptr_ArrayType);
+
+  if (HPy_SetAttr_s(ctx, hm, "array", h_ArrayType) < 0) {
+    HPy_Close(ctx, h_ArrayType);
     HPy_Close(ctx, hm);
     return HPy_NULL;
   }

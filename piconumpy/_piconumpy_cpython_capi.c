@@ -193,13 +193,11 @@ static PyModuleDef piconumpymodule = {
 PyMODINIT_FUNC PyInit__piconumpy_cpython_capi(void) {
   PyObject *m;
 
-  ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
-
   m = PyModule_Create(&piconumpymodule);
   if (m == NULL)
     return NULL;
 
-  Py_INCREF(ptr_ArrayType);
+  ptr_ArrayType = (PyTypeObject *)PyType_FromSpec(&Array_type_spec);
   if (PyModule_AddObject(m, "array", (PyObject *)ptr_ArrayType) < 0) {
     Py_DECREF(ptr_ArrayType);
     Py_DECREF(m);

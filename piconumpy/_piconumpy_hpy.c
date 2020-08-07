@@ -189,7 +189,6 @@ static HPyType_Spec Array_type_spec = {
     .defines = Array_defines,
 };
 
-PyTypeObject *ptr_ArrayType;
 HPy h_ArrayType;
 
 static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result) {
@@ -236,11 +235,9 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
   h_ArrayType = HPyType_FromSpec(ctx, &Array_type_spec);
   if (HPy_IsNull(h_ArrayType))
       return HPy_NULL;
-  ptr_ArrayType = (PyTypeObject *)HPy_AsPyObject(ctx, h_ArrayType);
 
   if (HPy_SetAttr_s(ctx, hm, "array", h_ArrayType) < 0) {
     HPy_Close(ctx, h_ArrayType);
-    Py_DECREF(ptr_ArrayType);
     HPy_Close(ctx, hm);
     return HPy_NULL;
   }

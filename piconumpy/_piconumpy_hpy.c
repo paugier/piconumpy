@@ -16,30 +16,36 @@ static void Array_dealloc(ArrayObject *self) {
   Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
-static int Array_init(ArrayObject *self, PyObject *args, PyObject *kwds) {
-  static char *kwlist[] = {"data", NULL};
+HPyDef_SLOT(Array_init, HPy_tp_init, Array_init_impl, HPyFunc_INITPROC)
+static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
+                           HPy_ssize_t nargs, HPy kw) {
+  static const char *kwlist[] = {"data", NULL};
+  ArrayObject *self = HPy_CAST(ctx, ArrayObject, h_self);
   int index;
-  PyObject *data = NULL, *item;
+  HPy h_data = HPy_NULL;
 
-  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|O", kwlist, &data))
+  if (!HPyArg_ParseKeywords(ctx, args, nargs, kw, "|O", kwlist, &h_data))
     return -1;
 
-  if (!PyList_Check(data)) {
-    PyErr_SetString(PyExc_TypeError, "parameter must be a list");
+  if (!HPyList_Check(ctx, h_data)) {
+    HPyErr_SetString(ctx, ctx->h_TypeError, "parameter must be a list");
     return -1;
   }
 
-  self->size = (int)PyList_Size(data);
+  self->size = (int)HPy_Length(ctx, h_data);
 
   self->data = (double *)malloc(self->size * sizeof(double));
   if (self->data == NULL) {
-    PyErr_NoMemory();
+    HPyErr_NoMemory(ctx);
     return -1;
   }
 
+  // XXX: this is not doing any error check (but the original C-API version
+  // doesn't either :shrug:
   for (index = 0; index < self->size; index++) {
-    item = PyList_GET_ITEM(data, index);
-    self->data[index] = PyFloat_AsDouble(item);
+    HPy h_item = HPy_GetItem_i(ctx, h_data, index);
+    self->data[index] = HPyFloat_AsDouble(ctx, h_item);
+    HPy_Close(ctx, h_item);
   }
 
   return 0;
@@ -157,7 +163,6 @@ static PyMethodDef Array_methods[] = {
 HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
 
 static PyType_Slot Array_type_slots[] = {
-    {Py_tp_init, (initproc)Array_init},
     {Py_tp_dealloc, (destructor)Array_dealloc},
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
@@ -166,6 +171,7 @@ static PyType_Slot Array_type_slots[] = {
 
 static HPyDef *Array_defines[] = {
     &Array_new,
+    &Array_init,
     &Array_add,
     &Array_multiply,
     &Array_divide,

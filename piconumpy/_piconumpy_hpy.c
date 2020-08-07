@@ -62,13 +62,13 @@ HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS)
 static HPy Array_tolist_impl(HPyContext ctx, HPy h_self) {
   ArrayObject *self = HPy_CAST(ctx, ArrayObject, h_self);
   int index;
-  HPy h_result = HPyList_New(ctx, self->size);
+  HPyListBuilder builder = HPyListBuilder_New(ctx, self->size);
   for (index = 0; index < self->size; index++) {
     HPy h_item = HPyFloat_FromDouble(ctx, self->data[index]);
-    HPy_SetItem_i(ctx, h_result, index, h_item);
+    HPyListBuilder_Set(ctx, builder, index, h_item);
     HPy_Close(ctx, h_item);
   }
-  return h_result;
+  return HPyListBuilder_Build(ctx, builder);
 };
 
 static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result);

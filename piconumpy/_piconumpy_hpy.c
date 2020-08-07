@@ -11,9 +11,10 @@ typedef struct {
   int size;
 } ArrayObject;
 
-static void Array_dealloc(ArrayObject *self) {
+HPyDef_SLOT(Array_destroy, HPy_tp_destroy, Array_destroy_impl, HPyFunc_DESTROYFUNC)
+static void Array_destroy_impl(void *obj) {
+  ArrayObject *self = (ArrayObject *)obj;
   free(self->data);
-  Py_TYPE(self)->tp_free((PyObject *)self);
 }
 
 HPyDef_SLOT(Array_init, HPy_tp_init, Array_init_impl, HPyFunc_INITPROC)
@@ -163,7 +164,6 @@ static PyMethodDef Array_methods[] = {
 HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
 
 static PyType_Slot Array_type_slots[] = {
-    {Py_tp_dealloc, (destructor)Array_dealloc},
     {Py_tp_members, Array_members},
     {Py_tp_methods, Array_methods},
     {0, NULL},
@@ -172,6 +172,7 @@ static PyType_Slot Array_type_slots[] = {
 static HPyDef *Array_defines[] = {
     &Array_new,
     &Array_init,
+    &Array_destroy,
     &Array_add,
     &Array_multiply,
     &Array_divide,

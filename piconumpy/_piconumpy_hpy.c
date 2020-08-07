@@ -57,15 +57,18 @@ static PyMemberDef Array_members[] = {
     {NULL} /* Sentinel */
 };
 
-static PyObject *Array_tolist(ArrayObject *self, PyObject *Py_UNUSED(ignored)) {
+// XXX add the docstring: "Return the data as a list"
+HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS)
+static HPy Array_tolist_impl(HPyContext ctx, HPy h_self) {
+  ArrayObject *self = HPy_CAST(ctx, ArrayObject, h_self);
   int index;
-  PyObject *result, *item;
-  result = PyList_New(self->size);
+  HPy h_result = HPyList_New(ctx, self->size);
   for (index = 0; index < self->size; index++) {
-    item = PyFloat_FromDouble(self->data[index]);
-    PyList_SetItem(result, index, item);
+    HPy h_item = HPyFloat_FromDouble(ctx, self->data[index]);
+    HPy_SetItem_i(ctx, h_result, index, h_item);
+    HPy_Close(ctx, h_item);
   }
-  return result;
+  return h_result;
 };
 
 static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result);
@@ -154,22 +157,16 @@ HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
   return item;
 };
 
-static PyMethodDef Array_methods[] = {
-    {"tolist", (PyCFunction)Array_tolist, METH_NOARGS,
-     "Return the data as a list"},
-    {NULL} /* Sentinel */
-};
-
 
 HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
 
 static PyType_Slot Array_type_slots[] = {
     {Py_tp_members, Array_members},
-    {Py_tp_methods, Array_methods},
     {0, NULL},
 };
 
 static HPyDef *Array_defines[] = {
+    // slots
     &Array_new,
     &Array_init,
     &Array_destroy,
@@ -178,6 +175,8 @@ static HPyDef *Array_defines[] = {
     &Array_divide,
     &Array_item,
     &Array_length,
+    // methods
+    &Array_tolist,
     NULL
 };
 

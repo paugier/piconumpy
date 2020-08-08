@@ -1,7 +1,3 @@
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-#include "structmember.h"
-
 #include "hpy.h"
 
 typedef struct {
@@ -52,10 +48,8 @@ static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
   return 0;
 }
 
-static PyMemberDef Array_members[] = {
-    {"size", T_INT, offsetof(ArrayObject, size), 0, "size of the array"},
-    {NULL} /* Sentinel */
-};
+HPyDef_MEMBER(Array_size, "size", HPyMember_INT, offsetof(ArrayObject, size),
+              .doc = "size of the array")
 
 // XXX add the docstring: "Return the data as a list"
 HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS)
@@ -157,13 +151,7 @@ HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
   return item;
 };
 
-
 HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
-
-static PyType_Slot Array_type_slots[] = {
-    {Py_tp_members, Array_members},
-    {0, NULL},
-};
 
 static HPyDef *Array_defines[] = {
     // slots
@@ -175,6 +163,8 @@ static HPyDef *Array_defines[] = {
     &Array_divide,
     &Array_item,
     &Array_length,
+    // members
+    &Array_size,
     // methods
     &Array_tolist,
     NULL
@@ -185,7 +175,6 @@ static HPyType_Spec Array_type_spec = {
     .basicsize = sizeof(ArrayObject),
     .itemsize = 0,
     .flags = HPy_TPFLAGS_DEFAULT,
-    .legacy_slots = Array_type_slots,
     .defines = Array_defines,
 };
 

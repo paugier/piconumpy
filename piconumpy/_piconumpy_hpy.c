@@ -7,13 +7,13 @@ typedef struct {
   int size;
 } ArrayObject;
 
-HPyDef_SLOT(Array_destroy, HPy_tp_destroy, Array_destroy_impl, HPyFunc_DESTROYFUNC)
+HPyDef_SLOT(Array_destroy, Array_destroy_impl, HPy_tp_destroy)
 static void Array_destroy_impl(void *obj) {
   ArrayObject *self = (ArrayObject *)obj;
   free(self->data);
 }
 
-HPyDef_SLOT(Array_init, HPy_tp_init, Array_init_impl, HPyFunc_INITPROC)
+HPyDef_SLOT(Array_init, Array_init_impl, HPy_tp_init)
 static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
                            HPy_ssize_t nargs, HPy kw) {
   static const char *kwlist[] = {"data", NULL};
@@ -67,8 +67,7 @@ static HPy Array_tolist_impl(HPyContext ctx, HPy h_self) {
 
 static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result);
 
-HPyDef_SLOT(Array_multiply, HPy_nb_multiply, Array_multiply_impl,
-            HPyFunc_BINARYFUNC)
+HPyDef_SLOT(Array_multiply, Array_multiply_impl, HPy_nb_multiply)
 static HPy Array_multiply_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   double number;
@@ -95,7 +94,7 @@ static HPy Array_multiply_impl(HPyContext ctx, HPy h1, HPy h2) {
   return h_result;
 };
 
-HPyDef_SLOT(Array_add, HPy_nb_add, Array_add_impl, HPyFunc_BINARYFUNC)
+HPyDef_SLOT(Array_add, Array_add_impl, HPy_nb_add)
 static HPy Array_add_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   ArrayObject *result = NULL, *a1, *a2;
@@ -113,7 +112,7 @@ static HPy Array_add_impl(HPyContext ctx, HPy h1, HPy h2) {
   return h_result;
 };
 
-HPyDef_SLOT(Array_divide, HPy_nb_true_divide, Array_divide_impl, HPyFunc_BINARYFUNC)
+HPyDef_SLOT(Array_divide, Array_divide_impl, HPy_nb_true_divide)
 static HPy Array_divide_impl(HPyContext ctx, HPy h1, HPy h2) {
   int index;
   double number;
@@ -133,7 +132,7 @@ static HPy Array_divide_impl(HPyContext ctx, HPy h1, HPy h2) {
 };
 
 
-HPyDef_SLOT(Array_length, HPy_sq_length, Array_length_impl, HPyFunc_LENFUNC)
+HPyDef_SLOT(Array_length, Array_length_impl, HPy_sq_length)
 HPy_ssize_t Array_length_impl(HPyContext ctx, HPy h_arr) {
   ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
   HPy_ssize_t result = (HPy_ssize_t)arr->size;
@@ -141,7 +140,7 @@ HPy_ssize_t Array_length_impl(HPyContext ctx, HPy h_arr) {
 };
 
 
-HPyDef_SLOT(Array_item, HPy_sq_item, Array_item_impl, HPyFunc_SSIZEARGFUNC)
+HPyDef_SLOT(Array_item, Array_item_impl, HPy_sq_item)
 HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
   ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
   if (index < 0 || index >= arr->size) {
@@ -151,7 +150,7 @@ HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
   return item;
 };
 
-HPyDef_SLOT(Array_new, HPy_tp_new, HPyType_GenericNew, HPyFunc_KEYWORDS)
+HPyDef_SLOT(Array_new, HPyType_GenericNew, HPy_tp_new)
 
 static HPyDef *Array_defines[] = {
     // slots
@@ -221,7 +220,7 @@ static HPy init__piconumpy_hpy_impl(HPyContext ctx) {
   if (HPy_IsNull(hm))
     return HPy_NULL;
 
-  h_ArrayType = HPyType_FromSpec(ctx, &Array_type_spec);
+  h_ArrayType = HPyType_FromSpec(ctx, &Array_type_spec, NULL);
   if (HPy_IsNull(h_ArrayType))
       return HPy_NULL;
 

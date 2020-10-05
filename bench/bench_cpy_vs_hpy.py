@@ -1,6 +1,9 @@
+import sys
 import time
 import numpy as np
 from math import pi, cos, sin
+
+IS_PYPY = hasattr(sys, 'pypy_version_info')
 
 def runge_kutta_step(mod, f, x0, dt, t=None):
     k1 = f(mod, t, x0) * dt
@@ -68,14 +71,28 @@ def bench(mod, n_sleds, n_time):
 N_SLEDS = 100
 N_TIME = 2000
 
-def main():
-    import piconumpy._piconumpy_cpython_capi as pnp_capi
-    import piconumpy._piconumpy_hpy as pnp_hpy
+def import_piconumpy_hpy_universal():
+    import hpy.universal
+    class spec:
+        name = '_piconumpy_hpy'
+        origin = 'piconumpy/_piconumpy_hpy.hpy.so'
+    return hpy.universal.load_from_spec(spec)
 
+def main():
+
+    import piconumpy._piconumpy_cpython_capi as pnp_capi
     t = bench(pnp_capi, N_SLEDS, N_TIME)
-    print(f'CPython C-API: {t:.2f} seconds')
-    t = bench(pnp_hpy, N_SLEDS, N_TIME)
-    print(f'HPy:           {t:.2f} seconds')
+    print(f'CPython C-API:   {t:.2f} seconds')
+
+    pnp_hpy_universal = import_piconumpy_hpy_universal()
+    t = bench(pnp_hpy_universal, N_SLEDS, N_TIME)
+    print(f'HPy [Universal]: {t:.2f} seconds')
+
+    if not IS_PYPY:
+        import piconumpy._piconumpy_hpy as pnp_hpy
+        t = bench(pnp_hpy, N_SLEDS, N_TIME)
+        print(f'HPy [CPy ABI]:   {t:.2f} seconds')
+
 
 
 if __name__ == '__main__':

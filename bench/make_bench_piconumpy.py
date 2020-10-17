@@ -27,6 +27,7 @@ from math import pi, cos, sin
 create_tmp_file("purepy")
 create_tmp_file("purepy_array")
 create_tmp_file("_piconumpy_cython")
+create_tmp_file("_piconumpy_hpy")
 
 
 code = (
@@ -44,6 +45,7 @@ from bench_array1d import bench as bench_numpy, bench_pythran
 from tmp_purepy import bench as bench_piconumpy_purepy
 from tmp_purepy_array import bench as bench_piconumpy_purepy_array
 from tmp_cython import bench as bench_cython
+from tmp_hpy import bench as bench_hpy
 
 # get norm from Julia benchmark
 with open("tmp_result_julia.txt") as file:
@@ -80,6 +82,7 @@ timeit(
 )
 timeit("bench_cython", name="PicoNumpy (Cython)")
 timeit("bench", name="PicoNumpy (CPython C-API)")
+timeit("bench_hpy", name="PicoNumpy (hpy universal C-API)")
 """
 )
 

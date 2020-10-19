@@ -6,12 +6,22 @@ code_functions = code.split("# end code functions (don't remove this line)")[0]
 
 
 def create_tmp_file(name_module):
+
+    if name_module == "_piconumpy_hpy_universal":
+        code_import = """
+from piconumpy.util_hpy import import_ext
+ext = import_ext()
+array = ext.array
+"""
+    else:
+        code_import = f"from piconumpy.{name_module} import array"
+
     code = (
         f"""
-import numpy as np
-from piconumpy.{name_module} import array
 from math import pi, cos, sin
-    """
+import numpy as np
+{code_import}
+"""
         + code_functions
     )
 
@@ -24,6 +34,7 @@ from math import pi, cos, sin
         file.write(code)
 
 
+create_tmp_file("_piconumpy_hpy_universal")
 create_tmp_file("purepy")
 create_tmp_file("purepy_array")
 create_tmp_file("_piconumpy_cython")
@@ -42,6 +53,8 @@ from math import pi, cos, sin
 from piconumpy.bench import timeit_verbose
 
 from bench_array1d import bench as bench_numpy, bench_pythran
+
+from tmp_hpy_universal import bench as bench_hpy_universal
 from tmp_purepy import bench as bench_piconumpy_purepy
 from tmp_purepy_array import bench as bench_piconumpy_purepy_array
 from tmp_cython import bench as bench_cython
@@ -72,6 +85,9 @@ def timeit(name_func, name):
         max_length_name=max_length_name,
     )
 
+timeit("bench", name="PicoNumpy (CPython C-API)")
+timeit("bench_hpy", name="PicoNumpy (hpy)")
+timeit("bench_hpy_universal", name="PicoNumpy (hpy universal)")
 timeit("bench_pythran", name="Transonic-Pythran")
 timeit("bench_numpy", name="Numpy")
 timeit(
@@ -81,8 +97,6 @@ timeit(
     "bench_piconumpy_purepy_array", name="PicoNumpy (purepy_array)",
 )
 timeit("bench_cython", name="PicoNumpy (Cython)")
-timeit("bench", name="PicoNumpy (CPython C-API)")
-timeit("bench_hpy", name="PicoNumpy (hpy)")
 """
 )
 

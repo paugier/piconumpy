@@ -20,7 +20,7 @@ setup(
                 '-Werror',           # turn warnings into errors (all, for now)
             ]
         ),
-#        *cythonize("piconumpy/_piconumpy_cython.pyx"),
+        *cythonize("piconumpy/_piconumpy_cython.pyx"),
     ],
     hpy_ext_modules=[
         Extension(

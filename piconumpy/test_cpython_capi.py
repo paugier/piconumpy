@@ -13,6 +13,12 @@ class Tests:
         assert type(a) is self.piconumpy.array
         assert a.size == 12
 
+    def test_zeros(self):
+        a = self.piconumpy.zeros(5)
+        assert type(a) is self.piconumpy.array
+        assert a.size == 5
+        assert a.tolist() == [0, 0, 0, 0, 0]
+
     def test_init_array(self):
         a = self._array([1.0, 2.0])
         assert a.size == 2

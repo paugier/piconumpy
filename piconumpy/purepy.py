@@ -30,3 +30,7 @@ class array:
 
 def empty(size):
     return array([0]*size)
+
+def zeros(size):
+    return array([0]*size)
+

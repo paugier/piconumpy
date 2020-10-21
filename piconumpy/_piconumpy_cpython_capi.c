@@ -184,8 +184,19 @@ static ArrayObject *empty(PyObject *module, PyObject *arg) {
   return Array_empty(size);
 };
 
+static ArrayObject *zeros(PyObject *module, PyObject *arg) {
+  int size;
+  size = (int)PyLong_AsLong(arg);
+  ArrayObject *result = Array_empty(size);
+  for(int i=0; i<size; i++)
+      result->data[i] = 0;
+  return result;
+};
+
+
 static PyMethodDef module_methods[] = {
     {"empty", (PyCFunction)empty, METH_O, "Create an empty array."},
+    {"zeros", (PyCFunction)zeros, METH_O, "Createa zero-filled array."},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 

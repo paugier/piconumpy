@@ -56,3 +56,6 @@ class array:
 
 cpdef empty(size):
     return array([0]*size)
+
+cpdef zeros(size):
+    return array([0]*size)

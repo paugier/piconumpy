@@ -200,9 +200,24 @@ static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   return Array_empty(ctx, size, &result);
 };
 
+/* XXX add the docstring: "Create a zero-filled array" */
+HPyDef_METH(zeros, "zeros", zeros_impl, HPyFunc_O)
+static HPy zeros_impl(HPyContext ctx, HPy module, HPy arg) {
+  int size;
+  ArrayObject *result;
+  size = (int)HPyLong_AsLong(ctx, arg);
+  HPy h_result = Array_empty(ctx, size, &result);
+  if (HPy_IsNull(h_result))
+      return HPy_NULL;
+  for(int i=0; i<size; i++)
+      result->data[i] = 0;
+  return h_result;
+};
+
 
 static HPyDef *module_defines[] = {
     &empty,
+    &zeros,
     NULL
 };
 

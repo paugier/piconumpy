@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages, Extension
-from Cython.Build import cythonize
+#from Cython.Build import cythonize
 
 setup(
     name="piconumpy",
@@ -19,7 +19,7 @@ setup(
                 '-Werror',           # turn warnings into errors (all, for now)
             ]
         ),
-        *cythonize("piconumpy/_piconumpy_cython.pyx"),
+#        *cythonize("piconumpy/_piconumpy_cython.pyx"),
     ],
     hpy_ext_modules=[
         Extension(

@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 
 from . import _piconumpy_cpython_capi
@@ -22,6 +23,20 @@ class Tests:
     def test_init_array(self):
         a = self._array([1.0, 2.0])
         assert a.size == 2
+
+    def test_getitem_setitem(self):
+        a = self._array([12.0, 34.0])
+        assert a[0] == 12.0
+        assert a[1] == 34.0
+        a[0] = 56
+        a[1] = 78
+        assert a[0] == 56.0
+        assert a[1] == 78.0
+        #
+        with pytest.raises(IndexError):
+            a[2]
+        with pytest.raises(IndexError):
+            a[2] = 3
 
     def test_init_array_numpy(self):
         np_a = np.array([1.0, 2.0, 0.0, 0.0])

@@ -27,6 +27,8 @@ class array:
     def __getitem__(self, index):
         return self.data[index]
 
+    def __setitem__(self, index, value):
+        self.data[index] = value
 
 def empty(size):
     return array([0]*size)

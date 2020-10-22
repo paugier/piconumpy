@@ -128,13 +128,25 @@ Py_ssize_t Array_length(ArrayObject *arr) {
 };
 
 PyObject *Array_item(ArrayObject *arr, Py_ssize_t index) {
-  PyObject *item = NULL;
   if (index < 0 || index >= arr->size) {
-    return item;
+      PyErr_SetString(PyExc_IndexError, "index out of range");
+      return NULL;
   }
-  item = PyFloat_FromDouble(arr->data[index]);
-  return item;
+  return PyFloat_FromDouble(arr->data[index]);
 };
+
+int Array_setitem(ArrayObject *arr, Py_ssize_t index, PyObject *item) {
+    if (index < 0 || index >= arr->size) {
+        PyErr_SetString(PyExc_IndexError, "index out of range");
+        return -1;
+    }
+    double value = PyFloat_AsDouble(item);
+    if (PyErr_Occurred())
+        return -1;
+    arr->data[index] = value;
+    return 0;
+}
+
 
 static PyMethodDef Array_methods[] = {
     {"tolist", (PyCFunction)Array_tolist, METH_NOARGS,
@@ -153,6 +165,7 @@ static PyType_Slot Array_type_slots[] = {
     {Py_nb_true_divide, (binaryfunc)Array_divide},
     {Py_sq_length, (lenfunc)Array_length},
     {Py_sq_item, (ssizeargfunc)Array_item},
+    {Py_sq_ass_item, (ssizeobjargproc)Array_setitem},
     {0, NULL},
 };
 

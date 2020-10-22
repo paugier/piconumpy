@@ -144,11 +144,27 @@ HPyDef_SLOT(Array_item, Array_item_impl, HPy_sq_item)
 HPy Array_item_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index) {
   ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
   if (index < 0 || index >= arr->size) {
+    HPyErr_SetString(ctx, ctx->h_IndexError, "index out of range");
     return HPy_NULL;
   }
   HPy item = HPyFloat_FromDouble(ctx, arr->data[index]);
   return item;
 };
+
+HPyDef_SLOT(Array_setitem, Array_setitem_impl, HPy_sq_ass_item)
+int Array_setitem_impl(HPyContext ctx, HPy h_arr, HPy_ssize_t index, HPy h_item) {
+  ArrayObject *arr = HPy_CAST(ctx, ArrayObject, h_arr);
+  if (index < 0 || index >= arr->size) {
+    HPyErr_SetString(ctx, ctx->h_IndexError, "index out of range");
+    return -1;
+  }
+  double value = HPyFloat_AsDouble(ctx, h_item);
+  if (HPyErr_Occurred(ctx))
+    return -1;
+  arr->data[index] = value;
+  return 0;
+};
+
 
 HPyDef_SLOT(Array_new, HPyType_GenericNew, HPy_tp_new)
 
@@ -161,6 +177,7 @@ static HPyDef *Array_defines[] = {
     &Array_multiply,
     &Array_divide,
     &Array_item,
+    &Array_setitem,
     &Array_length,
     // members
     &Array_size,

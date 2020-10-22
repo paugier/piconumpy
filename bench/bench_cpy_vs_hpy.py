@@ -1,6 +1,12 @@
 import time
-import numpy as np
+import random
 from math import pi, cos, sin
+
+def my_randn(mod, n):
+    result = mod.empty(n)
+    for i in range(n):
+        result[i] = random.normalvariate(0, 1)
+    return result
 
 def runge_kutta_step(mod, f, x0, dt, t=None):
     k1 = f(mod, t, x0) * dt
@@ -41,11 +47,6 @@ def board(mod,t, X_0):
 
 
 def solver(mod, f, x0, y0, u0, v0, dt, N_t, b=0.5):
-    x0 = mod.array(x0.tolist())
-    y0 = mod.array(y0.tolist())
-    u0 = mod.array(u0.tolist())
-    v0 = mod.array(v0.tolist())
-
     solutions = []
     for k in range(len(x0)):
         values_one_step = mod.array([x0[k], y0[k], u0[k], v0[k]])
@@ -56,10 +57,12 @@ def solver(mod, f, x0, y0, u0, v0, dt, N_t, b=0.5):
 
 
 def bench(mod, n_sleds, n_time):
-    x_init = np.zeros(n_sleds)
-    y_init = np.random.rand(n_sleds)
-    v_init = np.zeros(n_sleds)
-    u_init = np.zeros(n_sleds) + 3.5
+    x_init = mod.zeros(n_sleds)
+    y_init = my_randn(mod, n_sleds)
+    v_init = mod.zeros(n_sleds)
+    u_init = mod.zeros(n_sleds)
+    for i in range(n_sleds):
+        u_init[i] += 3.5
     start = time.time()
     solver(mod, board, x_init, y_init, u_init, v_init, 0.01, n_time)
     end = time.time()

@@ -51,8 +51,8 @@ static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
 HPyDef_MEMBER(Array_size, "size", HPyMember_INT, offsetof(ArrayObject, size),
               .doc = "size of the array")
 
-// XXX add the docstring: "Return the data as a list"
-HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS)
+HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS,
+            .doc = "Return the data as a list")
 static HPy Array_tolist_impl(HPyContext ctx, HPy h_self) {
   ArrayObject *self = HPy_CAST(ctx, ArrayObject, h_self);
   int index;
@@ -208,8 +208,7 @@ static HPy Array_empty(HPyContext ctx, int size, ArrayObject **result) {
   return h_new_array;
 };
 
-/* XXX add the docstring: "Create an empty array" */
-HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O)
+HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O, .doc = "Create an empty array")
 static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   int size;
   ArrayObject *result;
@@ -217,8 +216,7 @@ static HPy empty_impl(HPyContext ctx, HPy module, HPy arg) {
   return Array_empty(ctx, size, &result);
 };
 
-/* XXX add the docstring: "Create a zero-filled array" */
-HPyDef_METH(zeros, "zeros", zeros_impl, HPyFunc_O)
+HPyDef_METH(zeros, "zeros", zeros_impl, HPyFunc_O, .doc = "Create a zero-filled array")
 static HPy zeros_impl(HPyContext ctx, HPy module, HPy arg) {
   int size;
   ArrayObject *result;

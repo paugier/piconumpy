@@ -9,7 +9,8 @@ setup(
         # black can't be installed with PyPy3!
         "full": ["black"],
     },
-    setup_requires=['hpy.devel'],
+    # you need to manually install hpy.devel from the git repo for now
+    setup_requires=['hpy.devel>0.0'],
     ext_modules=[
         Extension(
             "piconumpy._piconumpy_cpython_capi",

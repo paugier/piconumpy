@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages, Extension
-#from Cython.Build import cythonize
+from Cython.Build import cythonize
 
 setup(
     name="piconumpy",
@@ -28,7 +28,7 @@ setup(
             ["piconumpy/_piconumpy_hpy.c"],
             extra_compile_args = [
                 '-Wfatal-errors',
-                '-Werror',
+                # '-Werror',
             ],
         ),
     ]

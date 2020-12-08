@@ -3,13 +3,19 @@ ifeq ($(PYTHON),)
 PYTHON := python
 endif
 
+all:
+	make develop_universal
+ifeq ($(PYTHON),python)
+	make build_ext
+endif
+
 develop:
 	$(PYTHON) setup.py develop
 
 develop_universal:
 	$(PYTHON) setup.py --hpy-abi=universal develop
 
-all:
+pip:
 	$(PYTHON) -m pip install -e .[dev]
 
 build_ext_universal:

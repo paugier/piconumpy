@@ -92,8 +92,8 @@ def timeit(name_func, name):
 
 timeit("bench", name="PicoNumpy (CPython C-API)")
 if not IS_PYPY:
-    timeit("bench_hpy", name="PicoNumpy (hpy CPy ABI)")
-timeit("bench_hpy_universal", name="PicoNumpy (hpy universal)")
+    timeit("bench_hpy", name="PicoNumpy (HPy CPy ABI)")
+timeit("bench_hpy_universal", name="PicoNumpy (HPy Universal)")
 timeit("bench_pythran", name="Transonic-Pythran")
 timeit("bench_numpy", name="Numpy")
 timeit(

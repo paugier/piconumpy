@@ -85,6 +85,50 @@ make profile METHOD="purepy"
 make profile METHOD="cython"
 ```
 
+### More precise notes on how to install and run the benchmarks with PyPy
+
+Download and extract a nightly PyPy build
+<https://buildbot.pypy.org/nightly/>. Add to the `PATH` environment variable
+the path of the directory containing the `pypy` executable (something like
+`~/opt/pypy-c-jit-101190-b661dc329618-linux64/bin`). Then, you should be able
+to run:
+
+```bash
+pypy -m ensurepip
+pypy -m pip install pip -U
+pypy -m pip install numpy cython pytest transonic pythran
+```
+
+We need to install the correct version of HPy for the version of PyPy we are using:
+
+```bash
+pypy -c "import hpy.universal as u; print(u.get_version()"
+```
+
+gives `('0.1.dev875+g7c832a2', '7c832a2')`.
+
+```bash
+cd ~/Dev/hpy
+# update to the correct commit
+pypy setup.py develop
+```
+
+Now we can build-install piconumpy:
+
+```bash
+cd ~/Dev/piconumpy
+python setup.py --hpy-abi=universal develop
+```
+
+And run the benchmarks with:
+
+```bash
+export $PYTHON="pypy"
+make clean
+make bench_hpy
+make
+```
+
 ## Few results
 
 As of today (8 Dec 2020), HPy is not yet ready for high performance, but at
@@ -97,8 +141,8 @@ least (with HPy git revision 7c832a2f) it runs !
 ```
 Julia                      :     1 * norm = 0.00194 s
 PicoNumpy (CPython C-API)  :  9.03 * norm
-PicoNumpy (hpy CPy ABI)    :  9.87 * norm
-PicoNumpy (hpy universal)  :  12.5 * norm
+PicoNumpy (HPy CPy ABI)    :  9.87 * norm
+PicoNumpy (HPy Universal)  :  12.5 * norm
 Transonic-Pythran          : 0.546 * norm
 Numpy                      :  37.5 * norm
 PicoNumpy (purepy)         :  39.2 * norm
@@ -111,7 +155,7 @@ PicoNumpy (Cython)         :  28.5 * norm
 ```
 Julia                      :     1 * norm = 0.00194 s
 PicoNumpy (CPython C-API)  :  33.3 * norm
-PicoNumpy (hpy universal)  :    15 * norm
+PicoNumpy (HPy Universal)  :    15 * norm
 Transonic-Pythran          : 0.629 * norm
 Numpy                      :   332 * norm
 PicoNumpy (purepy)         :  4.36 * norm

@@ -92,15 +92,14 @@ def main():
     t = bench(pnp_capi, N_SLEDS, N_TIME)
     print(f'CPython C-API:   {t:.2f} seconds')
 
-    pnp_hpy_universal = import_piconumpy_hpy_universal()
-    t = bench(pnp_hpy_universal, N_SLEDS, N_TIME)
-    print(f'HPy [Universal]: {t:.2f} seconds')
-
     if not IS_PYPY:
         import piconumpy._piconumpy_hpy as pnp_hpy
         t = bench(pnp_hpy, N_SLEDS, N_TIME)
         print(f'HPy [CPy ABI]:   {t:.2f} seconds')
 
+    pnp_hpy_universal = import_piconumpy_hpy_universal()
+    t = bench(pnp_hpy_universal, N_SLEDS, N_TIME)
+    print(f'HPy [Universal]: {t:.2f} seconds')
 
 
 if __name__ == '__main__':

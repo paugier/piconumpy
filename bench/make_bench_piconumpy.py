@@ -43,9 +43,12 @@ create_tmp_file("_piconumpy_hpy")
 
 code = (
     """
+import sys
 import numpy as np
 from piconumpy import array
 from math import pi, cos, sin
+
+IS_PYPY = hasattr(sys, 'pypy_version_info')
 """
     + code_functions
     + """
@@ -58,7 +61,9 @@ from tmp_hpy_universal import bench as bench_hpy_universal
 from tmp_purepy import bench as bench_piconumpy_purepy
 from tmp_purepy_array import bench as bench_piconumpy_purepy_array
 from tmp_cython import bench as bench_cython
-from tmp_hpy import bench as bench_hpy
+
+if not IS_PYPY:
+    from tmp_hpy import bench as bench_hpy
 
 # get norm from Julia benchmark
 with open("tmp_result_julia.txt") as file:
@@ -86,7 +91,8 @@ def timeit(name_func, name):
     )
 
 timeit("bench", name="PicoNumpy (CPython C-API)")
-timeit("bench_hpy", name="PicoNumpy (hpy CPy ABI)")
+if not IS_PYPY:
+    timeit("bench_hpy", name="PicoNumpy (hpy CPy ABI)")
 timeit("bench_hpy_universal", name="PicoNumpy (hpy universal)")
 timeit("bench_pythran", name="Transonic-Pythran")
 timeit("bench_numpy", name="Numpy")

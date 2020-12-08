@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/paugier/piconumpy.svg?branch=master)](https://travis-ci.org/paugier/piconumpy)
 
-**An experiment about Numpy and pyhandle/hpy**
+**An experiment about Numpy and HPy**
 
 The C API of CPython is one of the cause of the success of Python in scientific
 computing. In particular, Numpy (and all the Python scientific stack) is built
@@ -11,7 +11,7 @@ issue for the future of scientific Python (see [1], [2], [HPy]).
 
 [1]: https://faster-cpython.readthedocs.io/
 [2]: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
-[HPy]: https://github.com/pyhandle/hpy
+[HPy]: https://github.com/hpyproject/hpy
 
 [HPy] is a very ambitious and promissing project to design a new and better C
 API for interacting with Python interpreters. It should allow people to write
@@ -59,6 +59,11 @@ such codes using Numpy).
 [bench/bench_array1d.py]: https://github.com/paugier/piconumpy/blob/master/bench/bench_array1d.py
 
 ## Install and run the benchmarks
+
+**Warning:** PicoNumpy now depends on HPy, which still has to be installed from
+the [Git repository](https://github.com/hpyproject/hpy). For now, the
+installation is a bit more complex that what is described here (more about this
+[here](#more-precise-notes-on-how-to-install-and-run-the-benchmarks-with-PyPy)).
 
 `make` should install the package in editable mode. `cd bench; make` should run
 the benchmarks. For the benchmarks, Julia is used for a good comparison point
@@ -113,17 +118,17 @@ cd ~/Dev/hpy
 pypy setup.py develop
 ```
 
-Now we can build-install piconumpy:
+Now we can build-install PicoNumpy:
 
 ```bash
 cd ~/Dev/piconumpy
-python setup.py --hpy-abi=universal develop
+pypy setup.py --hpy-abi=universal develop
 ```
 
 And run the benchmarks with:
 
 ```bash
-export $PYTHON="pypy"
+export PYTHON="pypy"
 make clean
 make bench_hpy
 make

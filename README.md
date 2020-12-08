@@ -87,7 +87,54 @@ make profile METHOD="cython"
 
 ## Few results
 
-As of today (5 March 2020), HPy is not yet ready!
+As of today (8 Dec 2020), HPy is not yet ready for high performance, but at
+least (with HPy git revision 7c832a2f) it runs !
+
+### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
+
+- With CPython
+
+```
+Julia                      :     1 * norm = 0.00194 s
+PicoNumpy (CPython C-API)  :  9.03 * norm
+PicoNumpy (hpy CPy ABI)    :  9.87 * norm
+PicoNumpy (hpy universal)  :  12.5 * norm
+Transonic-Pythran          : 0.546 * norm
+Numpy                      :  37.5 * norm
+PicoNumpy (purepy)         :  39.2 * norm
+PicoNumpy (purepy_array)   :  37.1 * norm
+PicoNumpy (Cython)         :  28.5 * norm
+```
+
+- With PyPy3
+
+```
+Julia                      :     1 * norm = 0.00194 s
+PicoNumpy (CPython C-API)  :  33.3 * norm
+PicoNumpy (hpy universal)  :    15 * norm
+Transonic-Pythran          : 0.629 * norm
+Numpy                      :   332 * norm
+PicoNumpy (purepy)         :  4.36 * norm
+PicoNumpy (purepy_array)   :  7.69 * norm
+PicoNumpy (Cython)         :   247 * norm
+```
+
+#### Simpler benchmarks (bench_cpy_vs_hpy.py)
+
+- With CPython
+
+```
+CPython C-API:   1.83 seconds
+HPy [CPy ABI]:   2.20 seconds
+HPy [Universal]: 2.73 seconds
+```
+
+- With PyPy3
+
+```
+CPython C-API:   5.88 seconds
+HPy [Universal]: 3.17 seconds
+```
 
 ### At work (meige8pcpa79, Intel(R) Xeon(R) CPU E5-1603 v3 @ 2.80GHz)
 
@@ -113,78 +160,4 @@ PicoNumpy (purepy)         :   2.4 * norm
 PicoNumpy (purepy_array)   :  3.73 * norm
 PicoNumpy (Cython)         :   135 * norm
 PicoNumpy (CPython C-API)  :  17.8 * norm
-```
-
-### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
-
-- With CPython
-
-```raw
-Julia                      :     1 * norm = 0.00176 s
-Transonic-Pythran          :  0.73 * norm
-Numpy                      :  37.6 * norm
-PicoNumpy (purepy)         :  46.4 * norm
-PicoNumpy (purepy_array)   :  41.9 * norm
-PicoNumpy (Cython)         :  31.4 * norm
-PicoNumpy (CPython C-API)  :  9.22 * norm
-```
-
-- With PyPy3
-
-```raw
-Julia                      :     1 * norm = 0.00176 s
-Transonic-Pythran          : 0.797 * norm
-Numpy                      :   326 * norm
-PicoNumpy (purepy)         :  4.71 * norm
-PicoNumpy (purepy_array)   :  7.48 * norm
-PicoNumpy (Cython)         :   243 * norm
-PicoNumpy (CPython C-API)  :  36.6 * norm
-```
-
-## CPython C-API usage in PicoNumpy
-
-It is the first time that I wrote a Python extension by hand (without Cython or
-Pythran) and moreover, there are nearly no checks and I didn't pay attention to
-reference counting!
-
-List obtained from `grep -rwoh 'Py[_A-Z].[a-zA-Z_]*' | sort | uniq`:
-
-```raw
-PyArg_ParseTupleAndKeywords
-PyCFunction
-Py_DECREF
-PyErr_NoMemory
-PyErr_SetString
-PyExc_TypeError
-PyFloat_AsDouble
-PyFloat_FromDouble
-PyFloatObject
-Py_INCREF
-PyList_Check
-PyList_GET_ITEM
-PyList_New
-PyList_SetItem
-PyList_Size
-PyLong_AsLong
-PyMemberDef
-PyMethodDef
-PyMODINIT_FUNC
-PyModule_AddObject
-PyModule_Create
-PyModuleDef
-PyModuleDef_HEAD_INIT
-PyNumber_Check
-PyNumberMethods
-PyObject
-PyObject_HEAD
-PyObject_New
-PySequenceMethods
-Py_ssize_t
-Py_TPFLAGS_DEFAULT
-Py_TYPE
-PyType_GenericNew
-PyTypeObject
-PyType_Ready
-Py_UNUSED
-PyVarObject_HEAD_INIT
 ```

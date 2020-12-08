@@ -3,6 +3,12 @@ ifeq ($(PYTHON),)
 PYTHON := python
 endif
 
+develop:
+	$(PYTHON) setup.py develop
+
+develop_universal:
+	$(PYTHON) setup.py --hpy-abi=universal develop
+
 all:
 	$(PYTHON) -m pip install -e .[dev]
 

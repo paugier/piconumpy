@@ -20,16 +20,20 @@ static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
   ArrayObject *self = HPy_CAST(ctx, ArrayObject, h_self);
   int index;
   HPy h_data = HPy_NULL;
+  HPyTracker ht;
 
-  if (!HPyArg_ParseKeywords(ctx, args, nargs, kw, "|O", kwlist, &h_data))
-    return -1;
+  if (!HPyArg_ParseKeywords(ctx, &ht, args, nargs, kw, "|O", kwlist, &h_data)) {
+      return -1;
+  }
 
   if (!HPyList_Check(ctx, h_data)) {
+    HPyTracker_Close(ctx, ht);
     HPyErr_SetString(ctx, ctx->h_TypeError, "parameter must be a list");
     return -1;
   }
 
   self->size = (int)HPy_Length(ctx, h_data);
+  HPyTracker_Close(ctx, ht); // done with h_data
 
   self->data = (double *)malloc(self->size * sizeof(double));
   if (self->data == NULL) {

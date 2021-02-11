@@ -73,15 +73,16 @@ def bench(mod, n_sleds, n_time):
     end = time.time()
     return end-start
 
+
 N_SLEDS = 100
 N_TIME = 2000
 
+
 def import_piconumpy_hpy_universal():
     import hpy.universal
-    class spec:
-        name = '_piconumpy_hpy'
-        origin = 'piconumpy/_piconumpy_hpy.hpy.so'
-    return hpy.universal.load_from_spec(spec)
+    return hpy.universal.load(
+        '_piconumpy_hpy', 'piconumpy/_piconumpy_hpy.hpy.so')
+
 
 def main():
 
@@ -99,7 +100,5 @@ def main():
         print(f'HPy [CPy ABI]:   {t:.2f} seconds')
 
 
-
 if __name__ == '__main__':
     main()
-

@@ -33,10 +33,10 @@ static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
   }
 
   self->size = (int)HPy_Length(ctx, h_data);
-  HPyTracker_Close(ctx, ht); // done with h_data
 
   self->data = (double *)malloc(self->size * sizeof(double));
   if (self->data == NULL) {
+    HPyTracker_Close(ctx, ht); // done with h_data
     HPyErr_NoMemory(ctx);
     return -1;
   }
@@ -49,6 +49,7 @@ static int Array_init_impl(HPyContext ctx, HPy h_self, HPy *args,
     HPy_Close(ctx, h_item);
   }
 
+  HPyTracker_Close(ctx, ht); // done with h_data
   return 0;
 }
 

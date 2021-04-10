@@ -13,7 +13,7 @@ issue for the future of scientific Python (see [1], [2], [HPy]).
 [2]: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
 [HPy]: https://github.com/pyhandle/hpy
 
-[HPy] is a very ambitious and promissing project to design a new and better C
+[HPy] is a very ambitious and promising project to design a new and better C
 API for interacting with Python interpreters. It should allow people to write
 Python extensions efficient on different interpreters (CPython, PyPy, Jython,
 IronPython, GraalPython, RustPython, etc.).

@@ -14,6 +14,7 @@ develop:
 
 develop_universal:
 	$(PYTHON) setup.py --hpy-abi=universal develop
+	rm -f piconumpy/_piconumpy_hpy.py
 
 pip:
 	$(PYTHON) -m pip install -e .[dev]

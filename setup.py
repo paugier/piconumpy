@@ -4,6 +4,8 @@ from Cython.Build import cythonize
 
 setup(
     name="piconumpy",
+    version="0.0.0",
+    description="purepy_array and Cython extension",
     packages=find_packages(exclude=["bench"]),
     extras_require={
         "dev": ["transonic", "numpy", "pytest", "pythran"],

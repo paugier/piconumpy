@@ -136,77 +136,51 @@ make
 
 ## Few results
 
-As of today (8 Dec 2020), HPy is not yet ready for high performance, but at
-least (with HPy git revision 7c832a2f) it runs !
+As of today (6 July 2021), HPy is not yet ready for high performance, but at
+least (with HPy 0.0.2) it runs !
 
 ### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
 
 - With CPython
 
 ```
-Julia                      :     1 * norm = 0.00194 s
-PicoNumpy (CPython C-API)  :  9.03 * norm
-PicoNumpy (HPy CPy ABI)    :  9.87 * norm
-PicoNumpy (HPy Universal)  :  12.5 * norm
-Transonic-Pythran          : 0.546 * norm
-Numpy                      :  37.5 * norm
-PicoNumpy (purepy)         :  39.2 * norm
-PicoNumpy (purepy_array)   :  37.1 * norm
-PicoNumpy (Cython)         :  28.5 * norm
+Julia                      :     1 * norm = 0.00196 s
+PicoNumpy (CPython C-API)  :  9.42 * norm
+PicoNumpy (HPy CPy ABI)    :  9.95 * norm
+PicoNumpy (HPy Universal)  :  10.4 * norm
+Transonic-Pythran          : 0.497 * norm
+Numpy                      :  27.5 * norm
+PicoNumpy (purepy)         :  37.3 * norm
+PicoNumpy (purepy_array)   :  37.7 * norm
+PicoNumpy (Cython)         :  28.9 * norm
 ```
 
 - With PyPy3
 
 ```
-Julia                      :     1 * norm = 0.00194 s
-PicoNumpy (CPython C-API)  :  33.3 * norm
-PicoNumpy (HPy Universal)  :    15 * norm
-Transonic-Pythran          : 0.629 * norm
-Numpy                      :   332 * norm
-PicoNumpy (purepy)         :  4.36 * norm
-PicoNumpy (purepy_array)   :  7.69 * norm
-PicoNumpy (Cython)         :   247 * norm
+Julia                      :     1 * norm = 0.00196 s
+PicoNumpy (CPython C-API)  :  34.1 * norm
+PicoNumpy (HPy Universal)  :  12.8 * norm
+Transonic-Pythran          : 0.539 * norm
+Numpy                      :   232 * norm
+PicoNumpy (purepy)         :  4.39 * norm
+PicoNumpy (purepy_array)   :  6.33 * norm
+PicoNumpy (Cython)         :   274 * norm
 ```
 
-#### Simpler benchmarks (bench_cpy_vs_hpy.py)
+#### Simpler benchmarks (bench/bench_cpy_vs_hpy.py)
 
 - With CPython
 
 ```
-CPython C-API:   1.83 seconds
-HPy [CPy ABI]:   2.20 seconds
-HPy [Universal]: 2.73 seconds
+CPython C-API:   1.92 seconds
+HPy [Universal]: 2.08 seconds
+HPy [CPy ABI]:   2.02 seconds
 ```
 
 - With PyPy3
 
 ```
-CPython C-API:   5.88 seconds
-HPy [Universal]: 3.17 seconds
-```
-
-### At work (meige8pcpa79, Intel(R) Xeon(R) CPU E5-1603 v3 @ 2.80GHz)
-
-- With CPython
-
-```raw
-Julia                      :     1 * norm = 0.00534 s
-Transonic-Pythran          : 0.564 * norm
-Numpy                      :  18.2 * norm
-PicoNumpy (purepy)         :  23.7 * norm
-PicoNumpy (purepy_array)   :  21.7 * norm
-PicoNumpy (Cython)         :  15.6 * norm
-PicoNumpy (CPython C-API)  :   4.7 * norm
-```
-
-- With PyPy3
-
-```raw
-Julia                      :     1 * norm = 0.00534 s
-Transonic-Pythran          : 0.603 * norm
-Numpy                      :   183 * norm
-PicoNumpy (purepy)         :   2.4 * norm
-PicoNumpy (purepy_array)   :  3.73 * norm
-PicoNumpy (Cython)         :   135 * norm
-PicoNumpy (CPython C-API)  :  17.8 * norm
+CPython C-API:   5.75 seconds
+HPy [Universal]: 2.11 seconds
 ```

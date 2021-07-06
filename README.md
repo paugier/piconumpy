@@ -107,10 +107,10 @@ pypy -m pip install numpy cython pytest transonic pythran
 We need to install the correct version of HPy for the version of PyPy we are using:
 
 ```bash
-pypy -c "import hpy.universal as u; print(u.get_version()"
+pypy -c "import hpy.universal as u; print(u.get_version())"
 ```
 
-gives `('0.1.dev875+g7c832a2', '7c832a2')`.
+gives `('0.0.2rc2.dev12+gc9660c2', 'c9660c2')`.
 
 ```bash
 cd ~/Dev/hpy

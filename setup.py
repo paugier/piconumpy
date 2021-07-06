@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages, Extension
-
 from Cython.Build import cythonize
 
 setup(
@@ -11,7 +10,7 @@ setup(
         "full": ["black"],
     },
     # you need to manually install hpy.devel from the git repo for now
-    setup_requires=["hpy.devel>=0.0.2"],
+    setup_requires=["hpy.devel>=0.0.0"],
     ext_modules=[
         Extension(
             "piconumpy._piconumpy_cpython_capi",

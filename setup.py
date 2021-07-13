@@ -27,6 +27,7 @@ setup(
             "piconumpy._piconumpy_hpy",
             ["piconumpy/_piconumpy_hpy.c"],
             extra_compile_args=[
+                # see https://github.com/hpyproject/hpy/issues/219
                 # '-Wfatal-errors',
                 # '-Werror',
             ],

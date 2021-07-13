@@ -11,7 +11,7 @@ before_install:
   - pip install numpy cython pytest transonic pythran
   - git clone -b master --single-branch https://github.com/hpyproject/hpy
   - cd hpy
-  - git checkout 7c832a2
+  - git checkout cac5d02
   - python setup.py develop
   - cd $HOME/build/paugier/piconumpy
 

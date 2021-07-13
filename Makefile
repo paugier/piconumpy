@@ -37,7 +37,7 @@ tests:
 
 clean:
 	rm -f piconumpy/*.so
-	rm -rf build dist
+	rm -rf build dist piconumpy.egg-info
 
 black:
 	black -l 82 .

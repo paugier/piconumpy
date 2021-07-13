@@ -26,3 +26,7 @@ bench_with_lists: tmp_result_julia.txt
 
 clean:
 	rm -f tmp*
+
+produce_traces: tmp_result_julia.txt
+	PYPYLOG=jit-log-opt,jit-summary,jit-backend-counts:tmp_traces_list.txt pypy bench.py list
+	PYPYLOG=jit-log-opt,jit-summary,jit-backend-counts:tmp_traces_array.txt pypy bench.py

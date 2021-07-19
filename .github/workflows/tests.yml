@@ -1,0 +1,55 @@
+name: Tests
+
+on:
+  push:
+    branches: [ hpy ]
+    tags: ['*']
+  pull_request:
+    branches: [ hpy ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    steps:
+
+    - name: Install apt packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install julia
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        git clone -b master --single-branch https://github.com/hpyproject/hpy
+        cd hpy
+        git checkout 7b45ce522
+        pip install .
+        pip install numpy cython pytest transonic pythran
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: build
+      run: |
+        python setup.py develop
+
+    - name: Run tests
+      run: |
+        pytest -s
+
+    - name: Run bench
+      run: |
+        cd bench
+        make bench_hpy
+        make

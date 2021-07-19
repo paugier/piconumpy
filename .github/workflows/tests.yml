@@ -38,6 +38,7 @@ jobs:
     - name: build
       run: |
         python setup.py develop
+        python setup.py --hpy-abi=universal develop
 
     - name: Run tests
       run: |

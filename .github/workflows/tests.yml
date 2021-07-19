@@ -1,11 +1,6 @@
 name: Tests
 
-on:
-  push:
-    branches: [ hpy ]
-    tags: ['*']
-  pull_request:
-    branches: [ hpy ]
+on: [push]
 
 jobs:
   build:

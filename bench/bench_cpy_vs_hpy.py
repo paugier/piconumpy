@@ -23,8 +23,9 @@ def runge_kutta_step(mod, f, x0, dt, t=None):
     k3 = f(mod, t, x0 + k2 / 2) * dt
     k4 = f(mod, t, x0 + k3) * dt
     # workaround for a pypy bug
+    # see https://foss.heptapod.net/pypy/pypy/-/issues/3509
     # x_new = x0 + (k1 + 2 * k2 + 2 * k3 + k4) / 6
-    x_new = x0 + (k1 + (k2 * 2) + (k3 * 2) + k4) / 6
+    x_new = x0 + (k1 + k2 * 2 + k3 * 2 + k4) / 6
     return x_new
 
 

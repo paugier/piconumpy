@@ -225,7 +225,7 @@ static HPy empty_impl(HPyContext *ctx, HPy module, HPy arg) {
 HPyDef_METH(zeros, "zeros", zeros_impl, HPyFunc_O, .doc = "Create a zero-filled array")
 static HPy zeros_impl(HPyContext *ctx, HPy module, HPy arg) {
   int size;
-  ArrayObject *result;
+  ArrayObject *result = NULL;
   size = (int)HPyLong_AsLong(ctx, arg);
   HPy h_result = Array_empty(ctx, size, &result);
   if (HPy_IsNull(h_result))

@@ -75,12 +75,12 @@ fmt_name = f"{{:{max_length_name}s}}"
 name = fmt_name.format("Julia")
 print(f"{name}:     1 * norm = {norm:4.3g} s")
 
-n_sleds = 10
+n_sleds = 100
 n_time = 200
 
 g = locals()
 
-def timeit(name_func, name):
+def timeit(name_func, name, total_duration=2):
     return timeit_verbose(
         name_func + "(n_sleds, n_time)",
         globals=g,
@@ -88,6 +88,7 @@ def timeit(name_func, name):
         print_time=False,
         norm=norm,
         max_length_name=max_length_name,
+        total_duration=total_duration,
     )
 
 timeit("bench", name="PicoNumpy (CPython C-API)")
@@ -95,14 +96,14 @@ if not IS_PYPY:
     timeit("bench_hpy", name="PicoNumpy (HPy CPy ABI)")
 timeit("bench_hpy_universal", name="PicoNumpy (HPy Universal)")
 timeit("bench_pythran", name="Transonic-Pythran")
-timeit("bench_numpy", name="Numpy")
+timeit("bench_numpy", name="Numpy", total_duration=4)
 timeit(
     "bench_piconumpy_purepy", name="PicoNumpy (purepy)",
 )
 timeit(
     "bench_piconumpy_purepy_array", name="PicoNumpy (purepy_array)",
 )
-timeit("bench_cython", name="PicoNumpy (Cython)")
+timeit("bench_cython", name="PicoNumpy (Cython)", total_duration=4)
 """
 )
 

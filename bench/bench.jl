@@ -65,10 +65,10 @@ function bench(n_sleds, n_time)
 end
 
 
-n_sleds = 10
+n_sleds = 100
 n_time = 200
 
-nb_runs = 200
+nb_runs = 50
 
 times = zeros(nb_runs)
 

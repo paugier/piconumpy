@@ -54,3 +54,5 @@ jobs:
         make tmp_result_julia.txt
         make bench_hpy
         make
+        # let's rerun bench_hpy to get these results also at the end
+        make bench_hpy

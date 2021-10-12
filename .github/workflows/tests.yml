@@ -42,10 +42,11 @@ jobs:
       run: |
         python setup.py develop
         python setup.py --hpy-abi=universal develop
+        rm -f piconumpy/_piconumpy_hpy.py
 
     - name: Run tests
       run: |
-        pytest -s
+        pytest -v
 
     - name: Run bench
       run: |

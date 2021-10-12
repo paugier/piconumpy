@@ -24,9 +24,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        git clone -b master --single-branch https://github.com/hpyproject/hpy
+        git clone -b release/0.0.3 --single-branch https://github.com/hpyproject/hpy
         cd hpy
-        git checkout 7b45ce522
         pip install .
         pip install numpy cython pytest transonic pythran
 
@@ -47,5 +46,6 @@ jobs:
     - name: Run bench
       run: |
         cd bench
+        make tmp_result_julia.txt
         make bench_hpy
         make

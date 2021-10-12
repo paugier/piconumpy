@@ -96,14 +96,20 @@ if not IS_PYPY:
     timeit("bench_hpy", name="PicoNumpy (HPy CPy ABI)")
 timeit("bench_hpy_universal", name="PicoNumpy (HPy Universal)")
 timeit("bench_pythran", name="Transonic-Pythran")
-timeit("bench_numpy", name="Numpy", total_duration=4)
+try:
+    timeit("bench_numpy", name="Numpy", total_duration=8)
+except RuntimeError:
+    print("Skip bench_numpy because it's too slow")
 timeit(
     "bench_piconumpy_purepy", name="PicoNumpy (purepy)",
 )
 timeit(
     "bench_piconumpy_purepy_array", name="PicoNumpy (purepy_array)",
 )
-timeit("bench_cython", name="PicoNumpy (Cython)", total_duration=4)
+try:
+    timeit("bench_cython", name="PicoNumpy (Cython)", total_duration=8)
+except RuntimeError:
+    print("Skip bench_cython because it's too slow")
 """
 )
 

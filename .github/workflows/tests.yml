@@ -8,7 +8,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, pypy-3.7-nightly]
 
     steps:
 
@@ -22,11 +22,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
+    - if: startsWith(matrix.python-version, 'pypy') != true
+      name: Install HPy (only for CPython)
       run: |
         git clone -b release/0.0.3 --single-branch https://github.com/hpyproject/hpy
         cd hpy
         pip install .
+
+    - name: Install dependencies
+      run: |
         pip install numpy cython pytest transonic pythran
 
     - name: Checkout

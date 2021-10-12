@@ -109,6 +109,7 @@ def main():
         with open("tmp_result_julia.txt") as file:
             norm = float(file.read())
         end = ""
+        print(f"Julia:           {norm:.3f} seconds")
     else:
         norm = False
         end = "\n"
@@ -116,14 +117,14 @@ def main():
     t_capi = bench(pnp_capi, N_SLEDS, N_TIME)
     print(f"CPython C-API:   {t_capi:.3f} seconds", end=end)
     if norm:
-        print(f" ({t_capi/norm:.1f} * Julia)")
+        print(f" ({t_capi/norm:4.1f} * Julia)")
 
     pnp_hpy_universal = import_piconumpy_hpy_universal()
     t_hpy_univ = bench(pnp_hpy_universal, N_SLEDS, N_TIME)
     print(f"HPy [Universal]: {t_hpy_univ:.3f} seconds", end=end)
 
     if norm:
-        print(f" ({t_hpy_univ/norm:.1f} * Julia)")
+        print(f" ({t_hpy_univ/norm:4.1f} * Julia)")
 
     if not IS_PYPY:
         import piconumpy._piconumpy_hpy as pnp_hpy
@@ -132,7 +133,7 @@ def main():
         print(f"HPy [CPy ABI]:   {t_hpy_cpy_abi:.3f} seconds", end=end)
 
         if norm:
-            print(f" ({t_hpy_cpy_abi/norm:.1f} * Julia)")
+            print(f" ({t_hpy_cpy_abi/norm:4.1f} * Julia)")
 
     if IS_PYPY:
         import piconumpy.purepy as pnp_with_list

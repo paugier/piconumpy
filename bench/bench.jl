@@ -68,7 +68,7 @@ end
 n_sleds = 100
 n_time = 200
 
-nb_runs = 50
+nb_runs = 200
 
 times = zeros(nb_runs)
 

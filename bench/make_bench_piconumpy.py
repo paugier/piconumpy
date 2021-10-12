@@ -47,6 +47,7 @@ import sys
 import numpy as np
 from piconumpy import array
 from math import pi, cos, sin
+from pprint import pprint
 
 IS_PYPY = hasattr(sys, 'pypy_version_info')
 """
@@ -64,6 +65,8 @@ from tmp_cython import bench as bench_cython
 
 if not IS_PYPY:
     from tmp_hpy import bench as bench_hpy
+
+pprint({key: sys.implementation.__dict__[key] for key in ("cache_tag", "version")})
 
 # get norm from Julia benchmark
 with open("tmp_result_julia.txt") as file:

@@ -32,6 +32,8 @@ if method == "_piconumpy_hpy":
     array = ext.array
 elif method == "list":
     array = list
+elif method == "numpy":
+    array = np.array
 else:
     d = {}
     exec(f"from piconumpy.{method} import array", d)

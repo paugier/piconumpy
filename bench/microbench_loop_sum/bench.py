@@ -5,6 +5,8 @@ from random import random
 
 import numpy as np
 
+on_pypy = sys.implementation.name == 'pypy'
+
 tmp_result_julia = Path("tmp_result_julia.txt")
 if tmp_result_julia.exists():
     with open("tmp_result_julia.txt") as file:
@@ -24,6 +26,10 @@ def sum_loop(arr):
         result += value
     return result
 
+nb_runs = 500
+if on_pypy and method in ["list", "_piconumpy_hpy", "purepy"]:
+    nb_runs = 5000
+
 
 if method == "_piconumpy_hpy":
     from piconumpy.util_hpy import import_ext
@@ -38,12 +44,13 @@ else:
     d = {}
     exec(f"from piconumpy.{method} import array", d)
     array = d["array"]
+    if "piconumpy" not in method:
+        method = f"piconumpy.{method}"
 
 # print(array)
 
 size = 10000
 times = []
-nb_runs = 200
 for _ in range(nb_runs):
     data_as_list = [random() for _ in range(size)]
     arr = array(data_as_list)

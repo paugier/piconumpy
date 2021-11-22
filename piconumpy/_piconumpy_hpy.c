@@ -243,10 +243,9 @@ static HPyDef *module_defines[] = {
 };
 
 static HPyModuleDef piconumpymodule = {
-    HPyModuleDef_HEAD_INIT,
-    .m_name = "_piconumpy_hpy",
-    .m_doc = "piconumpy implemented with the HPy API.",
-    .m_size = -1,
+    .name = "_piconumpy_hpy",
+    .doc = "piconumpy implemented with the HPy API.",
+    .size = -1,
     .defines = module_defines,
 };
 

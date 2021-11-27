@@ -26,7 +26,7 @@ jobs:
       run: |
         git clone -b master --single-branch https://github.com/hpyproject/hpy
         cd hpy
-        git checkout 7b45ce522
+        git checkout bba7ec5f0
         pip install .
         pip install numpy cython pytest transonic pythran
 

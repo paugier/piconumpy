@@ -1,6 +1,8 @@
 
+.PHONY : clean print_info bench bench_sum_loop_index bench_cort bench_init_zeros
+
 bench: tmp_julia_sum_loop.txt
-	@python -c "import sys; from pprint import pprint as p; p({key: sys.implementation.__dict__[key] for key in ('cache_tag', 'version')})"
+	@$(MAKE) --no-print-directory print_info NAME_BENCH=sum_loop
 	@python bench.py list
 	@python bench.py purepy
 	@python bench.py numpy
@@ -8,7 +10,7 @@ bench: tmp_julia_sum_loop.txt
 	@python bench.py _piconumpy_cpython_capi
 
 bench_sum_loop_index: tmp_julia_sum_loop_index.txt
-	@python -c "import sys; from pprint import pprint as p; p({key: sys.implementation.__dict__[key] for key in ('cache_tag', 'version')})"
+	@$(MAKE) --no-print-directory print_info NAME_BENCH=sum_loop_index
 	@python bench.py list sum_loop_index
 	@python bench.py purepy sum_loop_index
 	@python bench.py numpy sum_loop_index
@@ -16,7 +18,7 @@ bench_sum_loop_index: tmp_julia_sum_loop_index.txt
 	@python bench.py _piconumpy_cpython_capi sum_loop_index
 
 bench_cort: tmp_julia_cort.txt
-	@python -c "import sys; from pprint import pprint as p; p({key: sys.implementation.__dict__[key] for key in ('cache_tag', 'version')})"
+	@$(MAKE) --no-print-directory print_info NAME_BENCH=cort
 	@python bench.py list cort
 	@python bench.py purepy cort
 	@python bench.py numpy cort
@@ -24,12 +26,17 @@ bench_cort: tmp_julia_cort.txt
 	@python bench.py _piconumpy_cpython_capi cort
 
 bench_init_zeros: tmp_julia_init_zeros.txt
-	@python -c "import sys; from pprint import pprint as p; p({key: sys.implementation.__dict__[key] for key in ('cache_tag', 'version')})"
+	@$(MAKE) --no-print-directory print_info NAME_BENCH=init_zeros
 	@python bench.py list init_zeros
 	@python bench.py purepy init_zeros
 	@python bench.py numpy init_zeros
 	@python bench.py _piconumpy_hpy init_zeros
 	@python bench.py _piconumpy_cpython_capi init_zeros
+
+print_info:
+	@echo bench $(NAME_BENCH)
+	@python -c "from socket import gethostname as f; print('hostname:', f())"
+	@python -c "import sys; from pprint import pprint as p; p({key: sys.implementation.__dict__[key] for key in ('cache_tag', 'version')})"
 
 tmp_julia_sum_loop.txt: bench.jl
 	@julia bench.jl > tmp_julia_sum_loop.txt
@@ -44,4 +51,4 @@ tmp_julia_init_zeros.txt: bench_init_zeros.jl
 	@julia bench_init_zeros.jl > tmp_julia_init_zeros.txt
 
 clean:
-	rm -f tmp_result_julia.txt
+	rm -f tmp_julia_*.txt

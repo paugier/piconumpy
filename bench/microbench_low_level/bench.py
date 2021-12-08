@@ -25,7 +25,6 @@ else:
     print(f"{tmp_result_julia} does not exist. First execute with `make`")
 
 
-
 def sum_loop(arr):
     result = 0.0
     for value in arr:
@@ -35,7 +34,7 @@ def sum_loop(arr):
 
 def sum_loop_index(arr):
     result = 0.0
-    for index in range(500):
+    for index in range(5000):
         result += arr[index]
     return result
 
@@ -92,8 +91,19 @@ t_first = perf_counter() - t_start
 for _ in range(round(1 / t_first)):
     compute_from_arr(arr)
 
+# estimate time after warming
 times = []
-nb_runs = 200
+nb_runs = 10
+for _ in range(nb_runs):
+    data_as_list = [random() for _ in range(size)]
+    arr = array(data_as_list)
+    t_start = perf_counter()
+    compute_from_arr(arr)
+    times.append(perf_counter() - t_start)
+
+# better estimate of the time
+nb_runs = max(20, round(0.5 / np.median(times)))
+times = []
 for _ in range(nb_runs):
     data_as_list = [random() for _ in range(size)]
     arr = array(data_as_list)

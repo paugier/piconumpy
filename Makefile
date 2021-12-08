@@ -24,6 +24,7 @@ build_ext_universal:
 
 build_ext:
 	$(PYTHON) setup.py build_ext -if
+	rm -f piconumpy/_piconumpy_hpy.py
 
 full:
 	$(PYTHON) -m pip install -e .[full]

@@ -1,14 +1,12 @@
 using Statistics
 
-function sum_loop(arr)
-    result = 0.
+function init_zeros(arr)
     for i in eachindex(arr)
-        result += arr[i]
+        arr[i] = 0.0
     end
-    return result
 end
 
-compute_from_arr = sum_loop
+compute_from_arr = init_zeros
 
 size = 10000
 nb_runs = 200

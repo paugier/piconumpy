@@ -6,8 +6,6 @@ from math import sqrt
 
 import numpy as np
 
-on_pypy = sys.implementation.name == 'pypy'
-
 try:
     method = sys.argv[1]
 except IndexError:
@@ -27,21 +25,16 @@ else:
     print(f"{tmp_result_julia} does not exist. First execute with `make`")
 
 
-
 def sum_loop(arr):
     result = 0.0
     for value in arr:
         result += value
     return result
 
-nb_runs = 500
-if on_pypy and method in ["list", "_piconumpy_hpy", "purepy"]:
-    nb_runs = 5000
-
 
 def sum_loop_index(arr):
     result = 0.0
-    for index in range(500):
+    for index in range(5000):
         result += arr[index]
     return result
 

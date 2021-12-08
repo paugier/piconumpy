@@ -2,7 +2,7 @@ using Statistics
 
 function sum_loop_index(arr)
     result = 0.
-    for i = 1:500
+    for i = 1:5000
         result += arr[i]
     end
     return result

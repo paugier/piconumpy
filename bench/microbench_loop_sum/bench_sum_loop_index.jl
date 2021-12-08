@@ -1,14 +1,14 @@
 using Statistics
 
-function sum_loop(arr)
+function sum_loop_index(arr)
     result = 0.
-    for i in eachindex(arr)
+    for i = 1:500
         result += arr[i]
     end
     return result
 end
 
-compute_from_arr = sum_loop
+compute_from_arr = sum_loop_index
 
 size = 10000
 nb_runs = 200

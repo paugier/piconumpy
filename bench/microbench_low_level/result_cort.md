@@ -29,10 +29,10 @@ hostname: voyage
 {'cache_tag': 'pypy37',
  'version': sys.pypy_version_info(major=7, minor=3, micro=7, releaselevel='final', serial=0)}
 list                          : 4.29e-05 s (  1.8 * Julia)
-purepy                        : 3.89e-05 s (  1.6 * Julia)
-numpy                         : 4.72e-02 s (1957.9 * Julia)
-_piconumpy_hpy                : 1.36e-03 s ( 56.5 * Julia)
-_piconumpy_cpython_capi       : 8.03e-03 s (332.8 * Julia)
+purepy                        : 4.12e-05 s (  1.7 * Julia)
+numpy                         : 4.77e-02 s (1975.5 * Julia)
+_piconumpy_hpy                : 1.46e-03 s ( 60.5 * Julia)
+_piconumpy_cpython_capi       : 6.96e-03 s (288.5 * Julia)
 ```
 
 With CPython:
@@ -42,9 +42,23 @@ bench cort
 hostname: voyage
 {'cache_tag': 'cpython-39',
  'version': sys.version_info(major=3, minor=9, micro=7, releaselevel='final', serial=0)}
-list                          : 4.47e-03 s (185.4 * Julia)
-purepy                        : 1.08e-02 s (448.6 * Julia)
-numpy                         : 9.69e-03 s (401.6 * Julia)
-_piconumpy_hpy                : 5.32e-03 s (220.5 * Julia)
-_piconumpy_cpython_capi       : 4.80e-03 s (198.9 * Julia)
+list                          : 4.42e-03 s (183.4 * Julia)
+purepy                        : 1.04e-02 s (430.0 * Julia)
+numpy                         : 9.76e-03 s (404.4 * Julia)
+_piconumpy_hpy                : 5.66e-03 s (234.7 * Julia)
+_piconumpy_cpython_capi       : 4.77e-03 s (197.7 * Julia)
+```
+
+With Python 3.8.5 (GraalVM CE Native 21.3.0)
+
+```
+bench cort
+hostname: voyage
+{'cache_tag': 'graalpython-38',
+ 'version': sys.version_info(major=3, minor=8, micro=5, releaselevel='alpha', serial=0)}
+list                          : 2.44e-05 s (  1.0 * Julia)
+purepy                        : 3.13e-05 s (  1.3 * Julia)
+numpy                         : ImportError numpy
+_piconumpy_hpy                : 1.69e-04 s (  7.0 * Julia)
+_piconumpy_cpython_capi       : 3.55e-04 s ( 14.7 * Julia)
 ```

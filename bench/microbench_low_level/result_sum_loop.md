@@ -10,7 +10,7 @@ def sum_loop(arr):
     return result
 ```
 
-One can run the benchmarks with `make`.
+One can run the benchmarks with `make bench_sum_loop`.
 
 With PyPy3.7, I get:
 

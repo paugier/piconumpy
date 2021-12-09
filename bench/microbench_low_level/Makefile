@@ -38,7 +38,7 @@ tmp_julia_init_zeros.txt: bench_init_zeros.jl
 clean:
 	rm -f tmp_*.txt
 
-produce_traces: tmp_result_julia.txt
+produce_traces: tmp_julia_sum_loop.txt
 	PYPYLOG=jit-log-opt,jit-summary,jit-backend-counts:tmp_traces_list.txt pypy bench.py list
 	PYPYLOG=jit-log-opt,jit-summary,jit-backend-counts:tmp_traces_piconumpy_list.txt pypy bench.py purepy
 	PYPYLOG=jit-log-opt,jit-summary,jit-backend-counts:tmp_traces_piconumpy_hpy.txt pypy bench.py _piconumpy_hpy

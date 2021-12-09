@@ -100,6 +100,7 @@ def median(sequence):
     return tmp[len(tmp) // 2]
 
 
+# measure during ~ 2s
 t0 = perf_counter()
 times = []
 while perf_counter() - t0 < 2.0:

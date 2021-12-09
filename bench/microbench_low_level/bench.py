@@ -4,8 +4,6 @@ from pathlib import Path
 from random import random
 from math import sqrt
 
-import numpy as np
-
 try:
     method = sys.argv[1]
 except IndexError:
@@ -72,6 +70,13 @@ if method == "_piconumpy_hpy":
 elif method == "list":
     array = list
 elif method == "numpy":
+
+    try:
+        import numpy as np
+    except ImportError:
+        print(f"{method:30s}: ImportError numpy")
+        sys.exit(0)
+
     array = np.array
 else:
     d = {}
@@ -80,26 +85,29 @@ else:
     if "piconumpy" not in method:
         method = f"piconumpy.{method}"
 
-# print(array)
-
 size = 10000
 
 # warming during ~ 1s
 data_as_list = [random() for _ in range(size)]
 arr = array(data_as_list)
 t_start = perf_counter()
-compute_from_arr(arr)
-t_first = perf_counter() - t_start
-for _ in range(round(1 / t_first)):
+while perf_counter() - t_start < 1.0:
     compute_from_arr(arr)
 
+
+def median(sequence):
+    tmp = sorted(sequence)
+    return tmp[len(tmp) // 2]
+
+
+t0 = perf_counter()
 times = []
-for _ in range(nb_runs):
+while perf_counter() - t0 < 2.0:
     data_as_list = [random() for _ in range(size)]
     arr = array(data_as_list)
     t_start = perf_counter()
     compute_from_arr(arr)
     times.append(perf_counter() - t_start)
 
-time = np.median(times)
+time = median(times)
 print(f"{method:30s}: {time:.2e} s ({time / norm:5.1f} * Julia)")

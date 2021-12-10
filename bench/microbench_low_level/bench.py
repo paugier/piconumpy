@@ -85,6 +85,9 @@ else:
     if "piconumpy" not in method:
         method = f"piconumpy.{method}"
 
+if "_piconumpy_" in method:
+    method = method.replace("_piconumpy_", "piconumpy.")
+
 size = 10000
 
 # warming during ~ 1s

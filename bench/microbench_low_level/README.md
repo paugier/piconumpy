@@ -12,4 +12,7 @@ We measure the performance for functions containing low level Python code.
 - `cort` (command `make bench_cort`): normalized cosine similarity measure
   between derivatives
 
+- `board` (command `make bench_board`): few indexing, simple float computations
+  with sin/cos and instantiation of a small array.
+
 The files result_*.txt contain few results.

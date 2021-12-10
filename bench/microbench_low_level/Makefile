@@ -13,6 +13,9 @@ bench_cort: tmp_julia_cort.txt _bench
 bench_init_zeros: NAME_BENCH=init_zeros
 bench_init_zeros: tmp_julia_init_zeros.txt _bench
 
+bench_board: NAME_BENCH=board
+bench_board: tmp_julia_board.txt _bench
+
 _bench:
 	@echo bench $(NAME_BENCH)
 	@python -c "from socket import gethostname as f; print('hostname:', f())"
@@ -34,6 +37,10 @@ tmp_julia_cort.txt: bench_cort.jl
 
 tmp_julia_init_zeros.txt: bench_init_zeros.jl
 	@julia bench_init_zeros.jl > tmp_julia_init_zeros.txt
+
+tmp_julia_board.txt: bench_board.jl
+	@julia bench_board.jl > tmp_julia_board.txt
+
 
 clean:
 	rm -f tmp_*.txt

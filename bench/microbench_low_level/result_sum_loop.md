@@ -38,7 +38,6 @@ piconumpy.purepy              : 2.17e-03 s (164.1 * Julia)
 numpy                         : 1.09e-03 s ( 82.2 * Julia)
 piconumpy.hpy                 : 7.39e-04 s ( 55.8 * Julia)
 piconumpy.cpython_capi        : 5.07e-04 s ( 38.3 * Julia)
-
 ```
 
 With Python 3.8.5 (GraalVM CE Native 21.3.0)

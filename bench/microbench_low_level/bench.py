@@ -2,7 +2,7 @@ import sys
 from time import perf_counter
 from pathlib import Path
 from random import random
-from math import sqrt
+from math import sqrt, pi, sin, cos
 
 try:
     method = sys.argv[1]
@@ -13,6 +13,33 @@ try:
     name_bench = sys.argv[2]
 except IndexError:
     name_bench = "sum_loop"
+
+
+if method == "_piconumpy_hpy":
+    from piconumpy.util_hpy import import_ext
+
+    ext = import_ext()
+    array = ext.array
+elif method == "list":
+    array = list
+elif method == "numpy":
+
+    try:
+        import numpy as np
+    except ImportError:
+        print(f"{method:30s}: ImportError numpy")
+        sys.exit(0)
+
+    array = np.array
+else:
+    d = {}
+    exec(f"from piconumpy.{method} import array", d)
+    array = d["array"]
+    if "piconumpy" not in method:
+        method = f"piconumpy.{method}"
+
+if "_piconumpy_" in method:
+    method = method.replace("_piconumpy_", "piconumpy.")
 
 
 tmp_result_julia = Path(f"tmp_julia_{name_bench}.txt")
@@ -59,34 +86,37 @@ def cort(arr):
     return _cort(arr, arr)
 
 
+def board(X_0):
+    x0 = X_0[0]
+    y0 = X_0[1]
+    u0 = X_0[2]
+    v0 = X_0[3]
+
+    g = 9.81
+    b = 0.5
+    a = 0.25
+    c = 0.5
+    p = (2 * pi) / 10.0
+    q = (2 * pi) / 4.0
+
+    H_x = -a + b * p * sin(p * x0) * cos(q * y0)
+    H_xx = b * p ** 2 * cos(p * x0) * cos(q * y0)
+    H_y = b * q * cos(p * x0) * sin(q * y0)
+    H_yy = b * q ** 2 * cos(p * x0) * cos(q * y0)
+    H_xy = -b * q * p * sin(p * x0) * sin(q * y0)
+
+    F = (g + H_xx * u0 ** 2 + 2 * H_xy * u0 * v0 + H_yy * v0 ** 2) / (
+        1 + H_x ** 2 + H_y ** 2
+    )
+
+    dU = -F * H_x - c * u0
+    dV = -F * H_y - c * v0
+
+    return array([u0, v0, dU, dV])
+
+
 compute_from_arr = locals()[name_bench]
 
-
-if method == "_piconumpy_hpy":
-    from piconumpy.util_hpy import import_ext
-
-    ext = import_ext()
-    array = ext.array
-elif method == "list":
-    array = list
-elif method == "numpy":
-
-    try:
-        import numpy as np
-    except ImportError:
-        print(f"{method:30s}: ImportError numpy")
-        sys.exit(0)
-
-    array = np.array
-else:
-    d = {}
-    exec(f"from piconumpy.{method} import array", d)
-    array = d["array"]
-    if "piconumpy" not in method:
-        method = f"piconumpy.{method}"
-
-if "_piconumpy_" in method:
-    method = method.replace("_piconumpy_", "piconumpy.")
 
 size = 10000
 

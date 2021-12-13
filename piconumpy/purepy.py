@@ -2,7 +2,7 @@ class array:
     __slots__ = ["data", "size"]
 
     def __init__(self, data):
-        self.data = list(float(number) for number in data)
+        self.data = list(data)
         self.size = len(self.data)
 
     def __add__(self, other):
@@ -35,4 +35,3 @@ def empty(size):
 
 def zeros(size):
     return array([0]*size)
-

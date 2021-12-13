@@ -120,6 +120,8 @@ compute_from_arr = locals()[name_bench]
 
 size = 10000
 
+print(f"{method:30s}:", end="", flush=True)
+
 # warming during ~ 1s
 data_as_list = [random() for _ in range(size)]
 arr = array(data_as_list)
@@ -133,10 +135,10 @@ def median(sequence):
     return tmp[len(tmp) // 2]
 
 
-# measure during ~ 2s
+# measure during ~ 4s
 t0 = perf_counter()
 times = []
-while perf_counter() - t0 < 2.0:
+while perf_counter() - t0 < 4.0:
     data_as_list = [random() for _ in range(size)]
     arr = array(data_as_list)
     t_start = perf_counter()
@@ -144,4 +146,4 @@ while perf_counter() - t0 < 2.0:
     times.append(perf_counter() - t_start)
 
 time = median(times)
-print(f"{method:30s}: {time:.2e} s ({time / norm:5.1f} * Julia)")
+print(f" {time:.2e} s ({time / norm:5.1f} * Julia)")

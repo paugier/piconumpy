@@ -42,12 +42,14 @@ if "_piconumpy_" in method:
     method = method.replace("_piconumpy_", "piconumpy.")
 
 
-tmp_result_julia = Path(f"tmp_julia_{name_bench}.txt")
+tmp_result_julia = Path(f"tmp/{name_bench}_julia.txt")
 if tmp_result_julia.exists():
     with open(tmp_result_julia) as file:
         norm = float(file.read())
 else:
-    print(f"{tmp_result_julia} does not exist. First execute with `make`")
+    raise RuntimeError(
+        f"{tmp_result_julia} does not exist. First execute with `make`"
+    )
 
 
 def sum_loop(arr):
@@ -113,6 +115,13 @@ def board(X_0):
     dV = -F * H_y - c * v0
 
     return array([u0, v0, dU, dV])
+
+
+def instantiate(arr):
+    x = arr[0]
+    result = array([x, 3 * x, 6 * x, 9 * x])
+    result[0] = 2 * result[1]
+    return result
 
 
 compute_from_arr = locals()[name_bench]

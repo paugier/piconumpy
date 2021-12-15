@@ -15,4 +15,7 @@ We measure the performance for functions containing low level Python code.
 - `board` (command `make bench_board`): few indexing, simple float computations
   with sin/cos and instantiation of a small array.
 
+- `instantiate` (command `make bench_instantiate`): dominated by the
+  instantiation/deletion of small arrays of 4 floats.
+
 The files result_*.txt contain few results.

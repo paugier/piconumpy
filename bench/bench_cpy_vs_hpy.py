@@ -87,9 +87,13 @@ N_TIME = 2000
 
 def import_piconumpy_hpy_universal():
     import hpy.universal
+    from importlib.util import spec_from_file_location
 
+    spec = spec_from_file_location("_piconumpy_hpy",
+               str(here.parent / "piconumpy/_piconumpy_hpy.hpy0.so"))
     return hpy.universal.load(
-        "_piconumpy_hpy", str(here.parent / "piconumpy/_piconumpy_hpy.hpy.so")
+        "_piconumpy_hpy", str(here.parent / "piconumpy/_piconumpy_hpy.hpy0.so"),
+        spec
     )
 
 

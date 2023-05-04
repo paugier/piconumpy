@@ -3,24 +3,30 @@ name = "piconumpy"
 version = "0.0.0"
 description = "An experiment about Numpy and pyhandle/hpy."
 authors = [
-    "Pierre Augier <pierre.augier@univ-grenoble-alpes.fr>"
+    {name = "Pierre Augier", email = "pierre.augier@univ-grenoble-alpes.fr"},
 ]
-license = "BSD 3-Clause"
+license = {text = "BSD 3-Clause"}
 readme = "README.md"
-python = "^3.6"
+keywords = ["numpy", "hpy", "PyPy"]
+requires-python = ">=3.8"
+
+[project.urls]
 homepage = "https://github.com/paugier/piconumpy"
 repository = "https://github.com/paugier/piconumpy"
 documentation = "https://github.com/paugier/piconumpy"
 
-keywords = ["numpy", "hpy", "PyPy"]
+[project.optional-dependencies]
+dev = ['transonic', 'numpy', 'pytest', 'pythran']
+full = ['black']
 
 [build-system]
 requires = [
     "setuptools >= 35.0.2",
     "wheel",
-    "cython"
+    "cython",
+    "hpy >= 0.9.0"
 ]
 
 [tool.black]
 line-length = 82
-target_version = ['py36']
+target_version = ['py310']

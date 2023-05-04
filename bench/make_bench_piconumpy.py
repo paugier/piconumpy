@@ -9,9 +9,8 @@ def create_tmp_file(name_module):
 
     if name_module == "_piconumpy_hpy_universal":
         code_import = """
-from piconumpy.util_hpy import import_ext
-ext = import_ext()
-array = ext.array
+from piconumpy import _piconumpy_hpy
+array = _piconumpy_hpy.array
 """
     else:
         code_import = f"from piconumpy.{name_module} import array"

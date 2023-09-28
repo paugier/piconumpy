@@ -4,6 +4,10 @@ from Cython.Build import cythonize
 setup(
     name="piconumpy",
     packages=find_packages(exclude=["bench"]),
+    # Workaround: HPy adds files to the sources list and uses absolute paths.
+    # Newer setuptools complain about that if package data should be included.
+    # Therefore, we explicitly disable this here.
+    include_package_data=False,
     ext_modules=[
         Extension(
             "piconumpy._piconumpy_cpython_capi",

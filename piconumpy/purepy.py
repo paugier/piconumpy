@@ -30,8 +30,10 @@ class array:
     def __setitem__(self, index, value):
         self.data[index] = value
 
+
 def empty(size):
-    return array([0]*size)
+    return array([0] * size)
+
 
 def zeros(size):
-    return array([0]*size)
+    return array([0] * size)

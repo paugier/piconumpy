@@ -8,33 +8,32 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [3.7, 3.8, 3.9, pypy-3.7-nightly]
+        python-version: ['3.8', '3.9', '3.10', 'pypy-3.7-nightly']
 
     steps:
 
-    - name: Install apt packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install julia
+    - name: Setup Julia
+      uses: julia-actions/setup-julia@v1
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
     - if: startsWith(matrix.python-version, 'pypy') != true
       name: Install HPy (only for CPython)
       run: |
-        git clone -b release/0.0.3 --single-branch https://github.com/hpyproject/hpy
-        cd hpy
-        pip install .
+        # git clone -b release/0.0.3 --single-branch https://github.com/hpyproject/hpy
+        # cd hpy
+        # pip install .
+        pip install hpy>=0.9.0rc1
 
     - name: Install dependencies
       run: |
         pip install numpy cython pytest transonic pythran
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 

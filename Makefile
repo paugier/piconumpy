@@ -4,10 +4,17 @@ PYTHON := python
 endif
 
 all:
-	make develop_universal
+	make editable_universal
 ifeq ($(PYTHON),python)
-	make build_ext
+	make editable
 endif
+
+editable:
+	$(PYTHON) -m pip install -e .
+
+editable_universal:
+	$(PYTHON) -m pip install -e . --config-settings="--global-option=--hpy-abi=universal"
+	rm -f piconumpy/_piconumpy_hpy.py
 
 develop:
 	$(PYTHON) setup.py develop
@@ -15,9 +22,6 @@ develop:
 develop_universal:
 	$(PYTHON) setup.py --hpy-abi=universal develop
 	rm -f piconumpy/_piconumpy_hpy.py
-
-pip:
-	$(PYTHON) -m pip install -e .[dev]
 
 build_ext_universal:
 	$(PYTHON) setup.py --hpy-abi=universal build_ext -if

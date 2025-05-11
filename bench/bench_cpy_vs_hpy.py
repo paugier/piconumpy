@@ -15,7 +15,7 @@ def my_randn(mod, n):
     return result
 
 
-IS_PYPY = hasattr(sys, "pypy_version_info")
+IS_CPY = sys.implementation.name == "cpython"
 
 
 def runge_kutta_step(mod, f, x0, dt, t=None):
@@ -130,7 +130,7 @@ def main():
     if norm:
         print(f" ({t_hpy_univ/norm:4.1f} * Julia)")
 
-    if not IS_PYPY:
+    if IS_CPY:
         import piconumpy._piconumpy_hpy as pnp_hpy
 
         t_hpy_cpy_abi = bench(pnp_hpy, N_SLEDS, N_TIME)
@@ -139,7 +139,7 @@ def main():
         if norm:
             print(f" ({t_hpy_cpy_abi/norm:4.1f} * Julia)")
 
-    if IS_PYPY:
+    if not IS_CPY:
         import piconumpy.purepy as pnp_with_list
 
         t_with_list = bench(pnp_with_list, N_SLEDS, N_TIME)

@@ -11,6 +11,7 @@ endif
 
 editable:
 	$(PYTHON) -m pip install -e .
+	rm -f piconumpy/_piconumpy_hpy.py
 
 editable_universal:
 	$(PYTHON) -m pip install -e . --config-settings="--global-option=--hpy-abi=universal"

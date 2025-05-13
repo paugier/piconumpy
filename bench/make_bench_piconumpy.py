@@ -49,7 +49,8 @@ from piconumpy import array
 from math import pi, cos, sin
 from pprint import pprint
 
-IS_PYPY = hasattr(sys, 'pypy_version_info')
+IS_CPY = sys.implementation.name == "cpython"
+
 """
     + code_functions
     + """
@@ -63,7 +64,7 @@ from tmp_purepy import bench as bench_piconumpy_purepy
 from tmp_purepy_array import bench as bench_piconumpy_purepy_array
 from tmp_cython import bench as bench_cython
 
-if not IS_PYPY:
+if IS_CPY:
     from tmp_hpy import bench as bench_hpy
 
 pprint({key: sys.implementation.__dict__[key] for key in ("cache_tag", "version")})
@@ -95,7 +96,7 @@ def timeit(name_func, name, total_duration=2):
     )
 
 timeit("bench", name="PicoNumpy (CPython C-API)")
-if not IS_PYPY:
+if IS_CPY:
     timeit("bench_hpy", name="PicoNumpy (HPy CPy ABI)")
 timeit("bench_hpy_universal", name="PicoNumpy (HPy Universal)")
 timeit("bench_pythran", name="Transonic-Pythran")

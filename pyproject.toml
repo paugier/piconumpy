@@ -20,8 +20,9 @@ documentation = "https://github.com/paugier/piconumpy"
 [project.optional-dependencies]
 test = ["pytest", "numpy"]
 bench = ['transonic', 'numpy', 'pythran']
+profile = ["gprof2dot"]
 format = ['black']
-full = ["piconumpy[test,bench,format]"]
+full = ["piconumpy[test,bench,profile,format]"]
 
 [build-system]
 requires = [

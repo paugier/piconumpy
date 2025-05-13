@@ -22,6 +22,9 @@ if method == "_piconumpy_hpy":
     array = ext.array
 elif method == "list":
     array = list
+    if name_bench == "element_wise":
+        sys.exit(0)
+
 elif method == "numpy":
 
     try:
@@ -122,6 +125,22 @@ def instantiate(arr):
     result = array([x, 3 * x, 6 * x, 9 * x])
     result[0] = 2 * result[1]
     return result
+
+
+def element_wise(arr):
+
+    dt = 0.1
+    x0 = arr
+
+    k1 = x0 * dt
+    k2 = (x0 + k1 / 2) * dt
+    k3 = (x0 + k2 / 2) * dt
+    k4 = (x0 + k3) * dt
+    # workaround for a pypy bug
+    # see https://foss.heptapod.net/pypy/pypy/-/issues/3509
+    # x_new = x0 + (k1 + 2 * k2 + 2 * k3 + k4) / 6
+    x_new = x0 + (k1 + k2 * 2 + k3 * 2 + k4) / 6
+    return x_new
 
 
 compute_from_arr = locals()[name_bench]

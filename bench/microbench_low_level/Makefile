@@ -21,6 +21,8 @@ bench_board: tmp/board_julia.txt _bench
 bench_instantiate: NAME_BENCH=instantiate
 bench_instantiate: tmp/instantiate_julia.txt _bench
 
+bench_element_wise: NAME_BENCH=element_wise
+bench_element_wise: tmp/element_wise_julia.txt _bench
 
 _bench:
 	@echo bench $(NAME_BENCH)

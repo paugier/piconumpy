@@ -7,7 +7,7 @@ ifeq ($(METHOD),)
 METHOD := cpython-c-api
 endif
 
-all: tmp.py tmp_result_julia.txt
+bench_full: tmp.py tmp_result_julia.txt
 	$(PYTHON) tmp.py
 
 tmp.py: bench_array1d.py make_bench_piconumpy.py

@@ -68,6 +68,9 @@ install_pypy:
 install_graalpy:
 	uv python install graalpy
 
+create_venv_cpy:
+	$(PYTHON) -m venv .venv_cpy --upgrade-deps
+
 create_venv_pypy:
 	$(shell uv python find pypy) -m venv .venv_pypy --upgrade-deps
 

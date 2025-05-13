@@ -5,42 +5,34 @@
 **An experiment about Numpy and HPy**
 
 The C API of CPython is one of the cause of the success of Python in scientific
-computing. In particular, Numpy (and all the Python scientific stack) is built
-on top of this API. However, some characteristics of this API start to be an
-issue for the future of scientific Python (see [1], [2], [HPy]).
+computing. In particular, Numpy (and all the Python scientific stack) is built on top of
+this API. However, some characteristics of this API start to be an issue for the future
+of scientific Python (see [1], [2], [HPy]).
 
-[1]: https://faster-cpython.readthedocs.io/
-[2]: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
-[HPy]: https://github.com/hpyproject/hpy
+[HPy] is a very ambitious and promising project to design a new and better C API for
+interacting with Python interpreters. It should allow people to write Python extensions
+efficient on different interpreters (CPython, PyPy, Jython, IronPython, GraalPython,
+RustPython, etc.).
 
-[HPy] is a very ambitious and promising project to design a new and better C
-API for interacting with Python interpreters. It should allow people to write
-Python extensions efficient on different interpreters (CPython, PyPy, Jython,
-IronPython, GraalPython, RustPython, etc.).
+PyPy would be especially useful for some scientific applications. For example for
+Integration and ODEs
+([scipy.integrate](https://docs.scipy.org/doc/scipy/reference/integrate.html)), for which
+there are a lot of callbacks of very small functions. This repository contains
+[a tiny benchmark](bench/without_numpy) showing that as long as Numpy is not used, PyPy
+is very efficient for such task. Unfortunately, as soon as Numpy is used, PyPy becomes
+very slow!
 
-PyPy would be especially useful for some scientific applications. For example
-for Integration and ODEs
-([scipy.integrate](https://docs.scipy.org/doc/scipy/reference/integrate.html)),
-for which there are a lot of callbacks of very small functions. This repository
-contains [a tiny benchmark](bench/without_numpy) showing that as long as Numpy
-is not used, PyPy is very efficient for such task. Unfortunately, as soon as
-Numpy is used, PyPy becomes very slow!
+With PicoNumpy, I'd like to study if [HPy] could help for codes using Numpy and callbacks
+of small Python functions.
 
-[bench/without_numpy]: https://github.com/paugier/piconumpy/blob/master/bench/without_numpy/
+We start by a [simple but realistic benchmark](bench/bench_array1d.py) (the slow loops
+only involve pure-Python and very simple Numpy). We then wrote a tiny ("pico")
+implementation of a Numpy like object (just sufficient to run the benchmark).
 
-With PicoNumpy, I'd like to study if [HPy] could help for codes using Numpy and
-callbacks of small Python functions.
+The next task is to reimplement PicoNumpy using [HPy] and to check if PyPy could
+efficiently accelerate [our main benchmark](bench/bench_array1d.py).
 
-We start by a [simple but realistic benchmark](bench/bench_array1d.py) (the
-slow loops only involve pure-Python and very simple Numpy). We then wrote a
-tiny ("pico") implementation of a Numpy like object (just sufficient to run the
-benchmark).
-
-The next task is to reimplement PicoNumpy using [HPy] and to check if PyPy
-could efficiently accelerate [our main benchmark](bench/bench_array1d.py).
-
-PicoNumpy is really tiny. It just provides an `array` class (one-dimensional)
-supporting:
+PicoNumpy is really tiny. It just provides an `array` class (one-dimensional) supporting:
 
 - Instantiation from a list of floats
 - Elementwise multiplication and division by a float
@@ -48,29 +40,25 @@ supporting:
 - Indexing
 - `len`
 
-A good acceleration by PyPy of our example would be a great proof that the
-scientific Python community has to invest time and energy on [HPy].
+A good acceleration by PyPy of our example would be a great proof that the scientific
+Python community has to invest time and energy on [HPy].
 
-In the script [bench_array1d.py](bench/bench_array1d.py), Transonic is used for
-the benchmark and comparison. With Transonic-Pythran, we typically get a 50
-speedup compared to CPython (and ~400 versus PyPy, which is still very slow for
-such codes using Numpy).
-
-[bench/bench_array1d.py]: https://github.com/paugier/piconumpy/blob/master/bench/bench_array1d.py
+In the script [bench_array1d.py](bench/bench_array1d.py), Transonic is used for the
+benchmark and comparison. With Transonic-Pythran, we typically get a 50 speedup compared
+to CPython (and ~400 versus PyPy, which is still very slow for such codes using Numpy).
 
 ## Install and run the benchmarks
 
-**Warning:** PicoNumpy now depends on HPy, which still has to be installed from
-the [Git repository](https://github.com/hpyproject/hpy). For now, the
-installation is a bit more complex that what is described here (more about this
+**Warning:** PicoNumpy depends on HPy >=0.9.0. For now, the installation is a bit more
+complex that what is described here (more about this
 [here](#more-precise-notes-on-how-to-install-and-run-the-benchmarks-with-PyPy)).
 
-`make` should install the package in editable mode. `cd bench; make` should run
-the benchmarks. For the benchmarks, Julia is used for a good comparison point
-so the command `julia` has to be available.
+`make` should install the package in editable mode. `cd bench; make` should run the
+benchmarks. For the benchmarks, Julia is used for a good comparison point so the command
+`julia` has to be available.
 
-For PyPy, the Makefiles are sensible to the environment variable `PYTHON`, so
-you could do:
+For PyPy, the Makefiles are sensible to the environment variable `PYTHON`, so you could
+do:
 
 ```bash
 export PYTHON=pypy3
@@ -79,8 +67,8 @@ cd bench
 make
 ```
 
-The benchmark code can be profiled for the different implementations with the
-commands (you need gprof2dot and graphviz):
+The benchmark code can be profiled for the different implementations with the commands
+(you need gprof2dot and graphviz):
 
 ```bash
 cd bench
@@ -90,48 +78,82 @@ make profile METHOD="purepy"
 make profile METHOD="cython"
 ```
 
-### More precise notes on how to install and run the benchmarks with PyPy
+### Notes on how to install and run the benchmarks with PyPy
 
-Download and extract a nightly PyPy build
-<https://buildbot.pypy.org/nightly/>. Add to the `PATH` environment variable
-the path of the directory containing the `pypy` executable (something like
-`~/opt/pypy-c-jit-101190-b661dc329618-linux64/bin`). Then, you should be able
-to run:
+PyPy can be downloaded with UV or manually (for example from
+<https://buildbot.pypy.org/nightly/> for a nightly build).
 
-```bash
-pypy -m ensurepip
-pypy -m pip install pip -U
-pypy -m pip install numpy cython pytest transonic pythran
+With UV, one can run
+
+```sh
+uv python install pypy
 ```
 
-One can check which HPy version is vendored with PyPy:
+and then get the path towards `pypy` executable with:
 
-```bash
-pypy -c "import hpy.universal as u; print(u.get_version())"
+```sh
+uv python find pypy
 ```
 
-gives `('0.0.3', '2196f14')`.
+which can give something like
+`~/.local/share/uv/python/pypy-3.11.11-linux-x86_64-gnu/bin/pypy`.
 
-Now we can build-install PicoNumpy:
+Then, you should be able to create a virtual environment, activate it and build-install
+PicoNumpy with
 
 ```bash
-cd ~/Dev/piconumpy
-pypy setup.py --hpy-abi=universal develop
+cd ~/dev/piconumpy
+~/.local/share/uv/python/pypy-3.11.11-linux-x86_64-gnu/bin/pypy -m venv .venv_pypy --upgrade-deps
+. .venv_pypy/bin/activate
+pip install -e .[full]
 ```
 
-And run the benchmarks with:
+and run the benchmarks with:
 
 ```bash
-export PYTHON="pypy"
+cd bench
 make clean
 make bench_hpy
 make
 ```
 
+Note that one can check which HPy version is vendored with PyPy:
+
+```bash
+python -c "import hpy.universal as u; print(u.get_version())"
+```
+
+### Notes on how to install and run the benchmarks with GraalPy
+
+GraalPy can be downloaded with UV with
+
+```sh
+uv python install graalpy
+```
+
+Then, one can run
+
+```sh
+cd ~/dev/piconumpy
+# cannot use --upgrade-deps because pip is patched for GraalPy
+$(uv python find graalpy) -m venv .venv_graalpy
+. .venv_graalpy/bin/activate
+# we don't try to run the full benchmarks using Pythran on GraalPy
+pip install -e .[test,profile]
+```
+
+and run the benchmarks with:
+
+```bash
+cd bench
+make clean
+make bench_hpy
+```
+
 ## Few results
 
-As of today (12 October 2021), HPy is not yet ready for high performance, but at
-least (with HPy 0.0.3) it runs !
+As of today (12 October 2021), HPy is not yet ready for high performance, but at least
+(with HPy 0.0.3) it runs !
 
 ### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
 
@@ -183,3 +205,7 @@ CPython C-API:   0.592 seconds (34.6 * Julia)
 HPy [Universal]: 0.207 seconds (12.1 * Julia)
 Python list:     0.093 seconds ( 5.4 * Julia)
 ```
+
+[1]: https://faster-cpython.readthedocs.io/
+[2]: https://morepypy.blogspot.com/2019/12/hpy-kick-off-sprint-report.html
+[hpy]: https://github.com/hpyproject/hpy

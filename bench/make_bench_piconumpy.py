@@ -43,11 +43,16 @@ create_tmp_file("_piconumpy_hpy")
 
 code = (
     """
+import socket
 import sys
-import numpy as np
-from piconumpy import array
+
 from math import pi, cos, sin
+from pathlib import Path
 from pprint import pprint
+
+import numpy as np
+
+from piconumpy import array
 
 IS_CPY = sys.implementation.name == "cpython"
 
@@ -68,10 +73,12 @@ if IS_CPY:
     from tmp_hpy import bench as bench_hpy
 
 pprint({key: sys.implementation.__dict__[key] for key in ("cache_tag", "version")})
-
+print(f"hostname: {socket.gethostname()}")
 # get norm from Julia benchmark
-with open("tmp_result_julia.txt") as file:
-    norm = float(file.read())
+
+path_julia_result = Path("tmp_result_julia.txt")
+assert path_julia_result.exists()
+norm = float(path_julia_result.read_text())
 
 max_length_name = len("piconumpy (CPython C-API)") + 2
 

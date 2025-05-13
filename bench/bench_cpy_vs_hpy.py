@@ -1,9 +1,11 @@
-import sys
-from time import perf_counter
 import random
+import socket
+import sys
+
 from math import pi, cos, sin
 from pathlib import Path
 from pprint import pprint
+from time import perf_counter
 
 here = Path(__file__).absolute().parent
 
@@ -107,6 +109,7 @@ def main():
     import piconumpy._piconumpy_cpython_capi as pnp_capi
 
     pprint({key: sys.implementation.__dict__[key] for key in ("cache_tag", "version")})
+    print(f"hostname: {socket.gethostname()}")
 
     tmp_result_julia = Path("tmp_result_julia.txt")
     if tmp_result_julia.exists():

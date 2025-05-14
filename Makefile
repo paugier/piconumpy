@@ -51,7 +51,7 @@ format:
 	black -l 82 setup.py piconumpy/*.py
 	clang-format-7 -i piconumpy/*cpython_capi.c
 
-tests:
+tests: rm_hpy_py
 	$(PYTHON) -m pytest piconumpy -s
 
 clean:

@@ -8,7 +8,7 @@ end
 
 compute_from_arr = init_zeros
 
-size = 10000
+size = 4
 nb_runs = 200
 
 times = zeros(nb_runs)

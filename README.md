@@ -35,8 +35,8 @@ efficiently accelerate [our main benchmark](bench/bench_array1d.py).
 PicoNumpy is really tiny. It just provides an `array` class (one-dimensional) supporting:
 
 - Instantiation from a list of floats
-- Elementwise multiplication and division by a float
-- Elementwise addition (of 2 arrays)
+- Element-wise multiplication and division by a float
+- Element-wise addition (of 2 arrays)
 - Indexing
 - `len`
 
@@ -44,31 +44,26 @@ A good acceleration by PyPy of our example would be a great proof that the scien
 Python community has to invest time and energy on [HPy].
 
 In the script [bench_array1d.py](bench/bench_array1d.py), Transonic is used for the
-benchmark and comparison. With Transonic-Pythran, we typically get a 50 speedup compared
+benchmark and comparison. With Transonic-Pythran, we typically get a 50 speed-up compared
 to CPython (and ~400 versus PyPy, which is still very slow for such codes using Numpy).
 
 ## Install and run the benchmarks
 
-**Warning:** PicoNumpy depends on HPy >=0.9.0. For now, the installation is a bit more
-complex that what is described here (more about this
-[here](#more-precise-notes-on-how-to-install-and-run-the-benchmarks-with-PyPy)).
+`pip install -e .[full]` should build and install the package in editable mode and all
+dependencies necessary for testing, benchmarking and profiling.
 
-`make` should install the package in editable mode. `cd bench; make` should run the
-benchmarks. For the benchmarks, Julia is used for a good comparison point so the command
-`julia` has to be available.
+For the benchmarks, Julia is used for a good comparison point so the command `julia` has
+to be available. Different benchmarks can be run with
 
-For PyPy, the Makefiles are sensible to the environment variable `PYTHON`, so you could
-do:
-
-```bash
-export PYTHON=pypy3
-make
+```sh
 cd bench
-make
+make clean
+make bench_hpy
+make bench_full
 ```
 
-The benchmark code can be profiled for the different implementations with the commands
-(you need gprof2dot and graphviz):
+The benchmark code can be profiled for the different piconumpy implementations with the
+commands (you need gprof2dot and graphviz):
 
 ```bash
 cd bench
@@ -78,7 +73,7 @@ make profile METHOD="purepy"
 make profile METHOD="cython"
 ```
 
-### Notes on how to install and run the benchmarks with PyPy
+### Notes on PyPy
 
 PyPy can be downloaded with UV or manually (for example from
 <https://buildbot.pypy.org/nightly/> for a nightly build).
@@ -103,7 +98,7 @@ PicoNumpy with
 
 ```bash
 cd ~/dev/piconumpy
-~/.local/share/uv/python/pypy-3.11.11-linux-x86_64-gnu/bin/pypy -m venv .venv_pypy --upgrade-deps
+$(uv python find pypy) -m venv .venv_pypy --upgrade-deps
 . .venv_pypy/bin/activate
 pip install -e .[full]
 ```
@@ -114,7 +109,7 @@ and run the benchmarks with:
 cd bench
 make clean
 make bench_hpy
-make
+make bench_full
 ```
 
 Note that one can check which HPy version is vendored with PyPy:
@@ -123,7 +118,7 @@ Note that one can check which HPy version is vendored with PyPy:
 python -c "import hpy.universal as u; print(u.get_version())"
 ```
 
-### Notes on how to install and run the benchmarks with GraalPy
+### Notes on GraalPy
 
 GraalPy can be downloaded with UV with
 
@@ -152,58 +147,116 @@ make bench_hpy
 
 ## Few results
 
-As of today (12 October 2021), HPy is not yet ready for high performance, but at least
-(with HPy 0.0.3) it runs !
-
-### At home (Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz)
+### Full benchmarks
 
 - With CPython
 
 ```
-Julia                      :     1 * norm = 0.0171 s
-PicoNumpy (CPython C-API)  :  11.1 * norm
-PicoNumpy (HPy CPy ABI)    :  11.6 * norm
-PicoNumpy (HPy Universal)  :  12.1 * norm
-Transonic-Pythran          : 0.537 * norm
-Numpy                      :  33.8 * norm
-PicoNumpy (purepy)         :  43.7 * norm
-PicoNumpy (purepy_array)   :  44.8 * norm
-PicoNumpy (Cython)         :  33.9 * norm
+{'cache_tag': 'cpython-311',
+ 'version': sys.version_info(major=3, minor=11, micro=2, releaselevel='final', serial=0)}
+hostname: meige7ltpa212
+Julia                      :     1 * norm = 0.0129 s
+PicoNumpy (CPython C-API)  :  6.55 * norm
+PicoNumpy (HPy CPy ABI)    :  7.46 * norm
+PicoNumpy (HPy Universal)  :  7.92 * norm
+Transonic-Pythran          : 0.581 * norm
+Numpy                      :  27.1 * norm
+PicoNumpy (purepy)         :  18.8 * norm
+PicoNumpy (purepy_array)   :  31.7 * norm
+PicoNumpy (Cython)         :  23.3 * norm
 ```
 
 - With PyPy3
 
 ```
-Julia                      :     1 * norm = 0.0171 s
-PicoNumpy (CPython C-API)  :  39.2 * norm
-PicoNumpy (HPy Universal)  :  13.1 * norm
-Transonic-Pythran          : 0.562 * norm
-Numpy                      :   286 * norm
-PicoNumpy (purepy)         :  5.59 * norm
-PicoNumpy (purepy_array)   :  7.41 * norm
-PicoNumpy (Cython)         :   282 * norm
+{'cache_tag': 'pypy311',
+ 'version': sys.pypy_version_info(major=7, minor=3, micro=19, releaselevel='final', serial=0)}
+hostname: meige7ltpa212
+Julia                      :     1 * norm = 0.0129 s
+PicoNumpy (CPython C-API)  :  35.5 * norm
+PicoNumpy (HPy Universal)  :  44.7 * norm
+Transonic-Pythran          : 0.609 * norm
+Numpy                      :   168 * norm
+PicoNumpy (purepy)         :  2.98 * norm
+PicoNumpy (purepy_array)   :   8.7 * norm
+PicoNumpy (Cython)         :   288 * norm
 ```
 
-#### Simpler benchmarks (bench/bench_cpy_vs_hpy.py)
+Discussion: PyPy with HPy universal is really too slow (44.7x slower than Julia, 6x slower than
+CPython with its C-API and even a bit slower that PyPy with cpyext!). This is a big issue
+for HPy!
+
+A reasonable target would be as fast as CPython with its C-API...
+
+Profiling shows that the issue is related to slow element-wise operations as in the micro-benchmark
+
+```sh
+cd microbench_low_level
+make bench_element_wise
+```
+
+- With CPython
+
+```sh
+bench element_wise
+hostname: meige7ltpa212
+{'cache_tag': 'cpython-311',
+ 'version': sys.version_info(major=3, minor=11, micro=2, releaselevel='final', serial=0)}
+piconumpy.purepy              : 7.88e-06 s ( 21.9 * Julia)
+numpy                         : 7.88e-06 s ( 21.9 * Julia)
+piconumpy.hpy (universal)     : 1.34e-06 s (  3.7 * Julia)
+piconumpy.cpython_capi        : 6.12e-07 s (  1.7 * Julia)
+```
+
+- With PyPy3
+
+```sh
+bench element_wise
+hostname: meige7ltpa212
+{'cache_tag': 'pypy311',
+ 'version': sys.pypy_version_info(major=7, minor=3, micro=19, releaselevel='final', serial=0)}
+piconumpy.purepy              : 1.46e-06 s (  4.1 * Julia)
+numpy                         : 4.39e-05 s (121.9 * Julia)
+piconumpy.hpy (universal)     : 4.27e-06 s ( 11.9 * Julia)
+piconumpy.cpython_capi        : 1.84e-06 s (  5.1 * Julia)
+```
+
+### Simpler benchmarks (bench/bench_cpy_vs_hpy.py)
 
 - With CPython
 
 ```
-{'cache_tag': 'cpython-39',
- 'version': sys.version_info(major=3, minor=9, micro=6, releaselevel='final', serial=0)}
-CPython C-API:   0.193 seconds (11.2 * Julia)
-HPy [Universal]: 0.208 seconds (12.1 * Julia)
-HPy [CPy ABI]:   0.201 seconds (11.7 * Julia)
+{'cache_tag': 'cpython-311',
+ 'version': sys.version_info(major=3, minor=11, micro=2, releaselevel='final', serial=0)}
+hostname: meige7ltpa212
+Julia:           0.013 seconds
+CPython C-API:   0.084 seconds ( 6.5 * Julia)
+HPy [Universal]: 0.102 seconds ( 7.9 * Julia)
+HPy [CPy ABI]:   0.096 seconds ( 7.4 * Julia)
 ```
 
 - With PyPy3
 
 ```
-{'cache_tag': 'pypy37',
- 'version': sys.pypy_version_info(major=7, minor=3, micro=6, releaselevel='final', serial=0)}
-CPython C-API:   0.592 seconds (34.6 * Julia)
-HPy [Universal]: 0.207 seconds (12.1 * Julia)
-Python list:     0.093 seconds ( 5.4 * Julia)
+{'cache_tag': 'pypy311',
+ 'version': sys.pypy_version_info(major=7, minor=3, micro=19, releaselevel='final', serial=0)}
+hostname: meige7ltpa212
+Julia:           0.013 seconds
+CPython C-API:   0.382 seconds (29.6 * Julia)
+HPy [Universal]: 0.487 seconds (37.6 * Julia)
+Python list:     0.037 seconds ( 2.9 * Julia)
+```
+
+- GraalPy
+
+```
+{'cache_tag': 'graalpy242-311',
+ 'version': sys.version_info(major=3, minor=11, micro=7, releaselevel='final', serial=0)}
+hostname: meige7ltpa212
+Julia:           0.013 seconds
+CPython C-API:   2.123 seconds (164.2 * Julia)
+HPy [Universal]: 1.541 seconds (119.2 * Julia)
+Python list:     0.542 seconds (41.9 * Julia)
 ```
 
 [1]: https://faster-cpython.readthedocs.io/

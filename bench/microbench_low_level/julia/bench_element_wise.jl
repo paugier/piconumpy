@@ -17,8 +17,8 @@ end
 
 compute_from_arr = element_wise
 
-size = 10000
-nb_runs = 200
+size = 4
+nb_runs = 2000
 
 times = zeros(nb_runs)
 

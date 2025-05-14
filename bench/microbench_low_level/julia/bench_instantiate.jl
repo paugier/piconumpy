@@ -9,7 +9,7 @@ end
 
 compute_from_arr = instantiate
 
-size = 10000
+size = 4
 nb_runs = 200
 
 times = zeros(nb_runs)

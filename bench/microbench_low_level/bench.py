@@ -14,6 +14,10 @@ try:
 except IndexError:
     name_bench = "sum_loop"
 
+try:
+    size = sys.argv[3]
+except IndexError:
+    size = None
 
 if method == "_piconumpy_hpy":
     from piconumpy.util_hpy import import_ext
@@ -44,6 +48,8 @@ else:
 if "_piconumpy_" in method:
     method = method.replace("_piconumpy_", "piconumpy.")
 
+if method.endswith("hpy"):
+    method += " (universal)"
 
 tmp_result_julia = Path(f"tmp/{name_bench}_julia.txt")
 if tmp_result_julia.exists():
@@ -145,8 +151,11 @@ def element_wise(arr):
 
 compute_from_arr = locals()[name_bench]
 
-
-size = 10000
+if size is None:
+    if method.startswith("sum_loop") or method == "cort":
+        size = 10000
+    else:
+        size = 4
 
 print(f"{method:30s}:", end="", flush=True)
 

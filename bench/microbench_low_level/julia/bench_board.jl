@@ -31,7 +31,7 @@ end
 
 compute_from_arr = board
 
-size = 10000
+size = 4
 nb_runs = 200
 
 times = zeros(nb_runs)

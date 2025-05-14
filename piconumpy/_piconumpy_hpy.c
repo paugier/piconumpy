@@ -8,14 +8,14 @@ typedef struct {
 
 HPyType_HELPERS(ArrayObject)
 
-HPyDef_SLOT(Array_destroy, Array_destroy_impl, HPy_tp_destroy)
+HPyDef_SLOT(Array_destroy, HPy_tp_destroy)
 static void Array_destroy_impl(void *obj) {
   ArrayObject *self = (ArrayObject *)obj;
   free(self->data);
 }
 
-HPyDef_SLOT(Array_init, Array_init_impl, HPy_tp_init)
-static int Array_init_impl(HPyContext *ctx, HPy h_self, HPy *args,
+HPyDef_SLOT(Array_init, HPy_tp_init)
+static int Array_init_impl(HPyContext *ctx, HPy h_self, const HPy *args,
                            HPy_ssize_t nargs, HPy kw) {
   static const char *kwlist[] = {"data", NULL};
   ArrayObject *self = ArrayObject_AsStruct(ctx, h_self);
@@ -23,7 +23,7 @@ static int Array_init_impl(HPyContext *ctx, HPy h_self, HPy *args,
   HPy h_data = HPy_NULL;
   HPyTracker ht;
 
-  if (!HPyArg_ParseKeywords(ctx, &ht, args, nargs, kw, "|O", kwlist, &h_data)) {
+  if (!HPyArg_ParseKeywordsDict(ctx, &ht, args, nargs, kw, "|O", kwlist, &h_data)) {
       return -1;
   }
 
@@ -57,7 +57,7 @@ static int Array_init_impl(HPyContext *ctx, HPy h_self, HPy *args,
 HPyDef_MEMBER(Array_size, "size", HPyMember_INT, offsetof(ArrayObject, size),
               .doc = "size of the array")
 
-HPyDef_METH(Array_tolist, "tolist", Array_tolist_impl, HPyFunc_NOARGS,
+HPyDef_METH(Array_tolist, "tolist", HPyFunc_NOARGS,
             .doc = "Return the data as a list")
 static HPy Array_tolist_impl(HPyContext *ctx, HPy h_self) {
   ArrayObject *self = ArrayObject_AsStruct(ctx, h_self);
@@ -73,7 +73,7 @@ static HPy Array_tolist_impl(HPyContext *ctx, HPy h_self) {
 
 static HPy Array_empty(HPyContext *ctx, int size, ArrayObject **result);
 
-HPyDef_SLOT(Array_multiply, Array_multiply_impl, HPy_nb_multiply)
+HPyDef_SLOT(Array_multiply, HPy_nb_multiply)
 static HPy Array_multiply_impl(HPyContext *ctx, HPy h1, HPy h2) {
   int index;
   double number;
@@ -100,7 +100,7 @@ static HPy Array_multiply_impl(HPyContext *ctx, HPy h1, HPy h2) {
   return h_result;
 };
 
-HPyDef_SLOT(Array_add, Array_add_impl, HPy_nb_add)
+HPyDef_SLOT(Array_add, HPy_nb_add)
 static HPy Array_add_impl(HPyContext *ctx, HPy h1, HPy h2) {
   int index;
   ArrayObject *result = NULL, *a1, *a2;
@@ -118,7 +118,7 @@ static HPy Array_add_impl(HPyContext *ctx, HPy h1, HPy h2) {
   return h_result;
 };
 
-HPyDef_SLOT(Array_divide, Array_divide_impl, HPy_nb_true_divide)
+HPyDef_SLOT(Array_divide, HPy_nb_true_divide)
 static HPy Array_divide_impl(HPyContext *ctx, HPy h1, HPy h2) {
   int index;
   double number;
@@ -138,7 +138,7 @@ static HPy Array_divide_impl(HPyContext *ctx, HPy h1, HPy h2) {
 };
 
 
-HPyDef_SLOT(Array_length, Array_length_impl, HPy_sq_length)
+HPyDef_SLOT(Array_length, HPy_sq_length)
 HPy_ssize_t Array_length_impl(HPyContext *ctx, HPy h_arr) {
   ArrayObject *arr = ArrayObject_AsStruct(ctx, h_arr);
   HPy_ssize_t result = (HPy_ssize_t)arr->size;
@@ -146,7 +146,7 @@ HPy_ssize_t Array_length_impl(HPyContext *ctx, HPy h_arr) {
 };
 
 
-HPyDef_SLOT(Array_item, Array_item_impl, HPy_sq_item)
+HPyDef_SLOT(Array_item, HPy_sq_item)
 HPy Array_item_impl(HPyContext *ctx, HPy h_arr, HPy_ssize_t index) {
   ArrayObject *arr = ArrayObject_AsStruct(ctx, h_arr);
   if (index < 0 || index >= arr->size) {
@@ -157,7 +157,7 @@ HPy Array_item_impl(HPyContext *ctx, HPy h_arr, HPy_ssize_t index) {
   return item;
 };
 
-HPyDef_SLOT(Array_setitem, Array_setitem_impl, HPy_sq_ass_item)
+HPyDef_SLOT(Array_setitem, HPy_sq_ass_item)
 int Array_setitem_impl(HPyContext *ctx, HPy h_arr, HPy_ssize_t index, HPy h_item) {
   ArrayObject *arr = ArrayObject_AsStruct(ctx, h_arr);
   if (index < 0 || index >= arr->size) {
@@ -172,7 +172,7 @@ int Array_setitem_impl(HPyContext *ctx, HPy h_arr, HPy_ssize_t index, HPy h_item
 };
 
 
-HPyDef_SLOT(Array_new, HPyType_GenericNew, HPy_tp_new)
+HPyDef_SLOT_IMPL(Array_new, HPyType_GenericNew, HPy_tp_new)
 
 static HPyDef *Array_defines[] = {
     // slots
@@ -200,11 +200,13 @@ static HPyType_Spec Array_type_spec = {
     .defines = Array_defines,
 };
 
-HPy h_ArrayType;
+static HPyGlobal ArrayType;
 
 static HPy Array_empty(HPyContext *ctx, int size, ArrayObject **result) {
   ArrayObject *new_array;
+  HPy h_ArrayType = HPyGlobal_Load(ctx, ArrayType);
   HPy h_new_array = HPy_New(ctx, h_ArrayType, &new_array);
+  HPy_Close(ctx, h_ArrayType);
   new_array->size = size;
   new_array->data = (double *)malloc(size * sizeof(double));
   if (new_array->data == NULL) {
@@ -214,7 +216,7 @@ static HPy Array_empty(HPyContext *ctx, int size, ArrayObject **result) {
   return h_new_array;
 };
 
-HPyDef_METH(empty, "empty", empty_impl, HPyFunc_O, .doc = "Create an empty array")
+HPyDef_METH(empty, "empty", HPyFunc_O, .doc = "Create an empty array")
 static HPy empty_impl(HPyContext *ctx, HPy module, HPy arg) {
   int size;
   ArrayObject *result;
@@ -222,10 +224,10 @@ static HPy empty_impl(HPyContext *ctx, HPy module, HPy arg) {
   return Array_empty(ctx, size, &result);
 };
 
-HPyDef_METH(zeros, "zeros", zeros_impl, HPyFunc_O, .doc = "Create a zero-filled array")
+HPyDef_METH(zeros, "zeros", HPyFunc_O, .doc = "Create a zero-filled array")
 static HPy zeros_impl(HPyContext *ctx, HPy module, HPy arg) {
   int size;
-  ArrayObject *result;
+  ArrayObject *result = NULL;
   size = (int)HPyLong_AsLong(ctx, arg);
   HPy h_result = Array_empty(ctx, size, &result);
   if (HPy_IsNull(h_result))
@@ -235,33 +237,36 @@ static HPy zeros_impl(HPyContext *ctx, HPy module, HPy arg) {
   return h_result;
 };
 
+HPyDef_SLOT(_piconumpy_hpy_exec, HPy_mod_exec)
+static int _piconumpy_hpy_exec_impl(HPyContext *ctx, HPy hm) {
+  HPy h_ArrayType = HPyType_FromSpec(ctx, &Array_type_spec, NULL);
+  if (HPy_IsNull(h_ArrayType)) {
+    return 1;
+  }
+  if (HPy_SetAttr_s(ctx, hm, "array", h_ArrayType) != 0) {
+    HPy_Close(ctx, h_ArrayType);
+    return 1;
+  }
+  HPyGlobal_Store(ctx, &ArrayType, h_ArrayType);
+  return 0;
+}
 
 static HPyDef *module_defines[] = {
+    &_piconumpy_hpy_exec,
     &empty,
     &zeros,
     NULL
 };
 
-static HPyModuleDef piconumpymodule = {
-    HPyModuleDef_HEAD_INIT,
-    .m_name = "_piconumpy_hpy",
-    .m_doc = "piconumpy implemented with the HPy API.",
-    .m_size = -1,
-    .defines = module_defines,
+static HPyGlobal *module_globals[] = {
+    &ArrayType,
+    NULL
 };
 
-HPy_MODINIT(_piconumpy_hpy)
-static HPy init__piconumpy_hpy_impl(HPyContext *ctx) {
-  HPy hm = HPyModule_Create(ctx, &piconumpymodule);
-  if (HPy_IsNull(hm))
-    return HPy_NULL;
+static HPyModuleDef piconumpymodule = {
+    .doc = "piconumpy implemented with the HPy API.",
+    .defines = module_defines,
+    .globals = module_globals,
+};
 
-  if (!HPyHelpers_AddType(ctx, hm, "array", &Array_type_spec, NULL)) {
-    HPy_Close(ctx, hm);
-    return HPy_NULL;
-  }
-
-  h_ArrayType = HPy_GetAttr_s(ctx, hm, "array");
-
-  return hm;
-}
+HPy_MODINIT(_piconumpy_hpy, piconumpymodule)
